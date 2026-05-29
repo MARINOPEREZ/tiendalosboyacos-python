@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <rect width="200" height="200" fill="#f0f4f0" rx="16"/>
+  <rect x="55" y="60" width="90" height="80" rx="10" fill="#c8dfc8"/>
+  <rect x="70" y="45" width="60" height="20" rx="6" fill="#a0c4a0"/>
+  <circle cx="100" cy="100" r="22" fill="#6aaa6a" opacity=".7"/>
+  <text x="100" y="107" text-anchor="middle" font-size="22" fill="white">📦</text>
+  <text x="100" y="165" text-anchor="middle" font-size="13" fill="#5a8a5a" font-family="sans-serif" font-weight="600">Sin imagen</text>
+</svg>

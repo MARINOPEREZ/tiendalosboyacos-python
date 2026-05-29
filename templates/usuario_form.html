@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ titulo }} — Los Boyacos</title>
+  <style>
+    :root {
+      --verde-oscuro: #1B5E20;
+      --verde-medio: #2E7D32;
+      --verde-claro: #4CAF50;
+      --amarillo: #FDB913;
+      --amarillo-claro: #FFF9E6;
+      --rojo-logo: #D32F2F;
+      --bg: #f4f6f0;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Segoe UI',sans-serif; background:var(--bg); color:#333; }
+
+    header {
+      background: linear-gradient(135deg, var(--verde-oscuro), var(--verde-medio));
+      padding:0 20px; box-shadow:0 3px 15px rgba(0,0,0,0.3);
+    }
+    .header-inner {
+      max-width:1200px; margin:0 auto;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 0;
+    }
+    .logo-wrap { display:flex; align-items:center; gap:10px; text-decoration:none; }
+    .logo-icon {
+      width:48px; height:48px; background:var(--amarillo);
+      border-radius:50%; display:flex; align-items:center;
+      justify-content:center; font-size:22px; font-weight:900;
+      color:var(--verde-oscuro); border:3px solid white;
+    }
+    .logo-text { color:white; }
+    .logo-text strong { font-size:18px; }
+    .logo-text span { display:block; font-size:11px; opacity:.8; }
+    .nav-links { display:flex; gap:10px; }
+    .btn-nav {
+      background:var(--amarillo); color:var(--verde-oscuro);
+      border:none; border-radius:20px; padding:8px 18px;
+      font-weight:700; font-size:13px; text-decoration:none;
+    }
+    .btn-nav.outline {
+      background:transparent; color:white;
+      border:2px solid rgba(255,255,255,.5);
+    }
+
+    main { max-width:700px; margin:30px auto; padding:0 16px; }
+
+    .breadcrumb {
+      display:flex; align-items:center; gap:8px;
+      font-size:13px; color:#888; margin-bottom:20px;
+    }
+    .breadcrumb a {
+      color:var(--verde-oscuro); text-decoration:none; font-weight:600;
+    }
+
+    .form-card {
+      background:white; border-radius:20px;
+      box-shadow:0 4px 20px rgba(0,0,0,.1); overflow:hidden;
+    }
+    .form-header {
+      background: linear-gradient(135deg, var(--rojo-logo), #B71C1C);
+      padding:24px 28px; display:flex; align-items:center; gap:16px;
+    }
+    .form-icono {
+      width:56px; height:56px; background:var(--amarillo);
+      border-radius:14px; display:flex; align-items:center;
+      justify-content:center; font-size:28px;
+      border:3px solid rgba(255,255,255,.3);
+    }
+    .form-header-info h1 { color:white; font-size:22px; font-weight:900; }
+    .form-header-info p { color:rgba(255,255,255,.8); font-size:14px; margin-top:4px; }
+
+    .form-body { padding:28px; }
+
+    .campo-grupo { margin-bottom:20px; }
+    .campo-grupo label {
+      display:block; font-size:13px; font-weight:700;
+      color:#555; margin-bottom:7px; text-transform:uppercase;
+      letter-spacing:.4px;
+    }
+    .campo-grupo input,
+    .campo-grupo select {
+      width:100%; padding:12px 16px;
+      border:2px solid #e8e8e8; border-radius:12px;
+      font-size:15px; font-family:'Segoe UI',sans-serif;
+      transition:.2s; background:#fafafa; color:#333;
+    }
+    .campo-grupo input:focus,
+    .campo-grupo select:focus {
+      border-color:var(--verde-claro); outline:none;
+      background:white; box-shadow:0 0 0 3px rgba(76,175,80,.1);
+    }
+    .campo-grupo input:disabled {
+      background:#f0f0f0; color:#888; cursor:not-allowed;
+    }
+
+    .campos-dobles {
+      display:grid; grid-template-columns:1fr 1fr; gap:16px;
+    }
+
+    .seccion-titulo {
+      font-size:12px; text-transform:uppercase; font-weight:700;
+      color:#aaa; letter-spacing:.8px; margin-bottom:16px;
+      padding-bottom:8px; border-bottom:2px solid #f0f0f0;
+      margin-top:8px;
+    }
+
+    .alerta {
+      padding:14px 18px; border-radius:12px; margin-bottom:20px;
+      font-size:14px; font-weight:600; display:flex;
+      align-items:center; gap:10px;
+    }
+    .alerta-exito {
+      background:#e8f5e9; color:var(--verde-oscuro);
+      border-left:4px solid var(--verde-claro);
+    }
+    .alerta-error {
+      background:#fde8e8; color:var(--rojo-logo);
+      border-left:4px solid var(--rojo-logo);
+    }
+
+    .form-footer {
+      display:flex; gap:12px; justify-content:flex-end;
+      padding-top:20px; border-top:2px solid #f0f0f0; margin-top:8px;
+    }
+    .btn-cancelar {
+      background:#f0f0f0; color:#666;
+      border:none; border-radius:20px; padding:11px 24px;
+      font-weight:700; font-size:14px; cursor:pointer;
+      text-decoration:none; transition:.2s;
+    }
+    .btn-cancelar:hover { background:#e0e0e0; }
+    .btn-guardar {
+      background:var(--rojo-logo); color:white;
+      border:none; border-radius:20px; padding:11px 28px;
+      font-weight:700; font-size:14px; cursor:pointer; transition:.2s;
+    }
+    .btn-guardar:hover { background:#B71C1C; }
+    .btn-guardar.editar {
+      background:var(--amarillo); color:var(--verde-oscuro);
+    }
+    .btn-guardar.editar:hover { background:#e6a800; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <a class="logo-wrap" href="/">
+        <div class="logo-icon">LB</div>
+        <div class="logo-text">
+          <strong>Los Boyacos</strong>
+          <span>Tienda Virtual</span>
+        </div>
+      </a>
+      <div class="nav-links">
+        <a class="btn-nav outline" href="/usuarios">← Usuarios</a>
+        <a class="btn-nav" href="/">Inicio</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <div class="breadcrumb">
+      <a href="/">Inicio</a> ›
+      <a href="/usuarios">Usuarios</a> ›
+      <span>{{ titulo }}</span>
+    </div>
+
+    <div class="form-card">
+
+      <div class="form-header">
+        <div class="form-icono">👤</div>
+        <div class="form-header-info">
+          <h1>{{ titulo }}</h1>
+          <p>{{ subtitulo }}</p>
+        </div>
+      </div>
+
+      <div class="form-body">
+
+        {% if mensaje %}
+          <div class="alerta {{ 'alerta-exito' if exito else 'alerta-error' }}">
+            {{ '✅' if exito else '❌' }} {{ mensaje }}
+          </div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data" autocomplete="off">
+
+          <!-- FOTO DE PERFIL -->
+          <div class="campo-grupo">
+            <label>📷 Foto de perfil</label>
+            <div style="display:flex; gap:14px; align-items:flex-start; flex-wrap:wrap;">
+              <div style="width:110px; height:110px; border-radius:50%; border:3px solid var(--verde-oscuro);
+                          overflow:hidden; flex-shrink:0; background:#f0f4f0;
+                          display:flex; align-items:center; justify-content:center;">
+                {% if usuario and usuario.Foto_Usuario %}
+                  <img id="preview-foto"
+                       src="{{ url_for('static', filename='img/usuarios/' + usuario.Foto_Usuario) }}"
+                       style="width:100%; height:100%; object-fit:cover;">
+                {% else %}
+                  <img id="preview-foto"
+                       src="{{ url_for('static', filename='img/default/usuario.svg') }}"
+                       style="width:80%; opacity:.5;">
+                {% endif %}
+              </div>
+              <div style="flex:1; min-width:180px; padding-top:10px;">
+                <input type="file" name="foto" id="foto-usuario"
+                  accept=".jpg,.jpeg,.png,.webp" style="display:none;">
+                <button type="button"
+                  onclick="document.getElementById('foto-usuario').click()"
+                  style="background:var(--verde-oscuro); color:white; border:none;
+                         padding:9px 18px; border-radius:10px; cursor:pointer;
+                         font-weight:700; font-size:13px; margin-bottom:8px; display:block;">
+                  📁 Seleccionar foto
+                </button>
+                <p style="font-size:11px; color:#888; margin:0;">
+                  Formatos: JPG, PNG, WEBP — Máx. 6 MB<br>
+                  {% if usuario and usuario.Foto_Usuario %}Dejar vacío para conservar la foto actual.{% endif %}
+                </p>
+                <p id="nombre-archivo-foto" style="font-size:12px;color:#555;margin-top:6px;font-weight:600;"></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- DOCUMENTO -->
+          <!-- ROL DEL USUARIO -->
+          <div class="campo-grupo" style="margin-bottom:16px;">
+            <label>🎭 Rol del usuario *</label>
+            <div style="display:flex;gap:10px;margin-top:8px;">
+              <label style="flex:1;border:2px solid var(--verde-oscuro);border-radius:12px;
+                            padding:10px 14px;cursor:pointer;display:flex;align-items:center;gap:8px;
+                            background:#e8f5e9;font-size:13px;font-weight:700;color:var(--verde-oscuro);"
+                     id="lbl-rol-cliente">
+                <input type="radio" name="rol" value="2" checked
+                       style="accent-color:var(--verde-oscuro);"
+                       onchange="toggleRolStyle()">
+                👤 Cliente
+              </label>
+              <label style="flex:1;border:2px solid #ddd;border-radius:12px;
+                            padding:10px 14px;cursor:pointer;display:flex;align-items:center;gap:8px;
+                            font-size:13px;font-weight:700;color:#555;"
+                     id="lbl-rol-admin">
+                <input type="radio" name="rol" value="1"
+                       style="accent-color:var(--verde-oscuro);"
+                       onchange="toggleRolStyle()">
+                ⚙️ Administrador
+              </label>
+              <label style="flex:1;border:2px solid #ddd;border-radius:12px;
+                            padding:10px 14px;cursor:pointer;display:flex;align-items:center;gap:8px;
+                            font-size:13px;font-weight:700;color:#555;"
+                     id="lbl-rol-domi">
+                <input type="radio" name="rol" value="3"
+                       style="accent-color:var(--verde-oscuro);"
+                       onchange="toggleRolStyle()">
+                🛵 Domiciliario
+              </label>
+            </div>
+          </div>
+
+          <div class="seccion-titulo">🪪 Documento de identidad</div>
+          <div class="campos-dobles">
+            <div class="campo-grupo">
+              <label>Tipo de documento *</label>
+              <select name="tipo_doc" id="tipo_doc" required onchange="actualizarValidacionDoc()">
+                <option value="">Seleccionar...</option>
+                <option value="CC"  {{ 'selected' if usuario and usuario.TipoDoc_Usuario == 'CC' }}>CC — Cédula de Ciudadanía</option>
+                <option value="TI"  {{ 'selected' if usuario and usuario.TipoDoc_Usuario == 'TI' }}>TI — Tarjeta de Identidad</option>
+                <option value="CE"  {{ 'selected' if usuario and usuario.TipoDoc_Usuario == 'CE' }}>CE — Cédula Extranjería</option>
+                <option value="NIT" {{ 'selected' if usuario and usuario.TipoDoc_Usuario == 'NIT' }}>NIT — NIT</option>
+              </select>
+            </div>
+            <div class="campo-grupo">
+              <label>Número de documento *</label>
+              <input type="text" name="num_doc" id="num_doc" required
+                placeholder="Ej: 1234567890"
+                pattern="[a-zA-Z0-9-]+"
+                title="Solo letras, números y guion. CC y TI solo aceptan números."
+                value="{{ usuario.NumDoc_Usuario if usuario else '' }}"
+                {{ 'disabled' if usuario }}>
+              <p id="doc-msg" style="font-size:12px; margin-top:6px; font-weight:600; min-height:16px;"></p>
+            </div>
+          </div>
+
+          <!-- NOMBRES -->
+          <div class="seccion-titulo">👤 Nombres y apellidos</div>
+          <div class="campos-dobles">
+            <div class="campo-grupo">
+              <label>Primer nombre *</label>
+              <input type="text" name="nom1" id="nom1" required
+                placeholder="Ej: Juan"
+                value="{{ usuario.Nom1_Usuario if usuario else '' }}">
+            </div>
+            <div class="campo-grupo">
+              <label>Segundo nombre</label>
+              <input type="text" name="nom2" id="nom2"
+                placeholder="Ej: Carlos"
+                value="{{ usuario.Nom2_Usuario if usuario else '' }}">
+            </div>
+            <div class="campo-grupo">
+              <label>Primer apellido *</label>
+              <input type="text" name="ape1" id="ape1" required
+                placeholder="Ej: Pérez"
+                value="{{ usuario.Ape1_Usuario if usuario else '' }}">
+            </div>
+            <div class="campo-grupo">
+              <label>Segundo apellido</label>
+              <input type="text" name="ape2" id="ape2"
+                placeholder="Ej: García"
+                value="{{ usuario.Ape2_Usuario if usuario else '' }}">
+            </div>
+          </div>
+
+          <!-- CONTACTO -->
+          <div class="seccion-titulo">📬 Información de contacto</div>
+          <div class="campos-dobles">
+            <div class="campo-grupo">
+              <label>📧 Correo electrónico *</label>
+              <input type="email" name="mail" id="mail" required
+                placeholder="Ej: juan@email.com"
+                autocomplete="off"
+                value="{{ usuario.Mail_Usuario if usuario else '' }}">
+            </div>
+            <div class="campo-grupo">
+              <label>📱 Celular</label>
+              <div style="display:flex; gap:6px; align-items:flex-start;">
+                <select name="indicativo" id="indicativo"
+                  style="width:130px; flex-shrink:0; padding:10px 8px;
+                         border:1.5px solid #ddd; border-radius:10px;
+                         font-size:13px; background:#fff; color:#333;">
+                  <option value="+57"  {{ 'selected' if not usuario or usuario.Indicativo_Usuario == '+57' }}>🇨🇴 +57 Colombia</option>
+                  <option value="+1"   {{ 'selected' if usuario and usuario.Indicativo_Usuario == '+1'  }}>🇺🇸 +1 USA/CAN</option>
+                  <option value="+52"  {{ 'selected' if usuario and usuario.Indicativo_Usuario == '+52' }}>🇲🇽 +52 México</option>
+                  <option value="+54"  {{ 'selected' if usuario and usuario.Indicativo_Usuario == '+54' }}>🇦🇷 +54 Argentina</option>
+                  <option value="+56"  {{ 'selected' if usuario and usuario.Indicativo_Usuario == '+56' }}>🇨🇱 +56 Chile</option>
+                  <option value="+51"  {{ 'selected' if usuario and usuario.Indicativo_Usuario == '+51' }}>🇵🇪 +51 Perú</option>
+                  <option value="+58"  {{ 'selected' if usuario and usuario.Indicativo_Usuario == '+58' }}>🇻🇪 +58 Venezuela</option>
+                  <option value="+593" {{ 'selected' if usuario and usuario.Indicativo_Usuario == '+593' }}>🇪🇨 +593 Ecuador</option>
+                  <option value="+34"  {{ 'selected' if usuario and usuario.Indicativo_Usuario == '+34' }}>🇪🇸 +34 España</option>
+                  <option value="+55"  {{ 'selected' if usuario and usuario.Indicativo_Usuario == '+55' }}>🇧🇷 +55 Brasil</option>
+                </select>
+                <div style="flex:1;">
+                  <input type="text" name="tel" id="tel"
+                    placeholder="10 dígitos — Ej: 3001234567"
+                    maxlength="10"
+                    value="{{ usuario.Tel_Usuario if usuario else '' }}">
+                  <p id="msg-tel" style="font-size:12px; margin-top:4px; font-weight:600; min-height:16px;"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONTRASEÑA ─────────────────────────────────── -->
+          <div class="seccion-titulo">🔑 Acceso al sistema</div>
+
+          {% if not usuario %}
+          <!-- CREAR: contraseña obligatoria -->
+          <div class="campos-dobles">
+            <div class="campo-grupo">
+              <label>🔑 Contraseña *</label>
+              <input type="password" name="password" required
+                placeholder="Mínimo 6 caracteres" minlength="6"
+                autocomplete="new-password">
+            </div>
+            <div class="campo-grupo">
+              <label>🔑 Confirmar contraseña *</label>
+              <input type="password" name="password_confirm" required
+                placeholder="Repite la contraseña" minlength="6"
+                autocomplete="new-password">
+            </div>
+          </div>
+
+          {% else %}
+          <!-- EDITAR: contraseña opcional -->
+          <p style="font-size:13px; color:#888; margin:0 0 12px 0;">
+            💡 Deja en blanco si no deseas cambiar la contraseña.
+          </p>
+          <div class="campos-dobles">
+            <div class="campo-grupo">
+              <label>🔑 Nueva contraseña</label>
+              <input type="password" name="nueva_password"
+                placeholder="Mínimo 6 caracteres" minlength="6"
+                autocomplete="new-password">
+            </div>
+            <div class="campo-grupo">
+              <label>🔑 Confirmar nueva contraseña</label>
+              <input type="password" name="confirmar_password"
+                placeholder="Repite la nueva contraseña" minlength="6"
+                autocomplete="new-password">
+            </div>
+          </div>
+          {% endif %}
+
+          <div class="form-footer">
+            <a class="btn-cancelar" href="/usuarios">Cancelar</a>
+            <button class="btn-guardar {{ 'editar' if usuario else '' }}"
+              type="submit">
+              {{ '💾 Guardar cambios' if usuario else '➕ Registrar usuario' }}
+            </button>
+          </div>
+
+        </form>
+
+<script>
+  // ── Validación número de documento ──────────────────────────────────
+  const tipoDoc = document.getElementById('tipo_doc');
+  const numDoc  = document.getElementById('num_doc');
+  const docMsg  = document.getElementById('doc-msg');
+
+  // Si el campo está disabled (modo editar), no aplicamos validación
+  const docEditable = numDoc && !numDoc.disabled;
+
+  // Mínimos por tipo de documento
+  const minPorTipo = { 'CC': 8, 'CE': 8, 'TI': 10, 'NIT': 10 };
+
+  function actualizarValidacionDoc() {
+    if (!docEditable) return;
+    numDoc.value = '';
+    docMsg.textContent = '';
+    numDoc.style.borderColor = '';
+    const tipo = tipoDoc ? tipoDoc.value : '';
+    const min  = minPorTipo[tipo] || 8;
+    numDoc.minLength = min;
+    if (tipo === 'CC' || tipo === 'TI') {
+      numDoc.placeholder = `Solo números (mín. ${min} dígitos)`;
+    } else if (tipo) {
+      numDoc.placeholder = `Letras y números (mín. ${min} caracteres)`;
+    } else {
+      numDoc.placeholder = 'Ej: 1234567890';
+    }
+  }
+
+  function validarNumDoc() {
+    if (!docEditable) return true;
+    const tipo = tipoDoc ? tipoDoc.value : '';
+    const val  = numDoc.value.trim();
+    const min  = minPorTipo[tipo] || 8;
+
+    const sinEspeciales = /^[a-zA-Z0-9-]+$/;
+    const soloNumeros   = /^[0-9]+$/;
+
+    if (!val) {
+      docMsg.textContent = '';
+      numDoc.style.borderColor = '';
+      return true;
+    }
+
+    // ── Validar formato según tipo ─────────────────────
+    if (tipo === 'CC' || tipo === 'TI') {
+      if (!soloNumeros.test(val)) {
+        numDoc.style.borderColor = '#D32F2F';
+        docMsg.style.color = '#D32F2F';
+        docMsg.textContent = `❌ ${tipo} solo permite números`;
+        return false;
+      }
+    } else {
+      if (!sinEspeciales.test(val)) {
+        numDoc.style.borderColor = '#D32F2F';
+        docMsg.style.color = '#D32F2F';
+        docMsg.textContent = '❌ No se permiten caracteres especiales';
+        return false;
+      }
+    }
+
+    // ── Validar longitud mínima ────────────────────────
+    if (val.length < min) {
+      numDoc.style.borderColor = '#D32F2F';
+      docMsg.style.color = '#D32F2F';
+      docMsg.textContent = `❌ ${tipo || 'Documento'} requiere mínimo ${min} caracteres (faltan ${min - val.length})`;
+      return false;
+    }
+
+    numDoc.style.borderColor = '#4CAF50';
+    docMsg.style.color = '#2E7D32';
+    docMsg.textContent = '✅ Número de documento válido';
+    return true;
+  }
+
+  if (docEditable && numDoc) {
+
+    // ── Bloquear caracteres ANTES de que entren al campo (moderno) ──
+    numDoc.addEventListener('beforeinput', function(e) {
+      if (!e.data) return; // backspace, delete, etc. — dejar pasar
+      const tipo = tipoDoc ? tipoDoc.value : '';
+      if (tipo === 'CC' || tipo === 'TI') {
+        // Solo dígitos 0-9
+        if (!/^[0-9]+$/.test(e.data)) e.preventDefault();
+      } else {
+        // Sin caracteres especiales — solo letras, números y guion
+        if (!/^[a-zA-Z0-9-]+$/.test(e.data)) e.preventDefault();
+      }
+    });
+
+    // ── Limpiar si se pegó texto con Ctrl+V (segunda línea de defensa) ──
+    numDoc.addEventListener('input', function() {
+      const tipo = tipoDoc ? tipoDoc.value : '';
+      const antes = numDoc.value;
+      if (tipo === 'CC' || tipo === 'TI') {
+        numDoc.value = numDoc.value.replace(/[^0-9]/g, '');
+      } else {
+        numDoc.value = numDoc.value.replace(/[^a-zA-Z0-9-]/g, '');
+      }
+      validarNumDoc();
+    });
+
+    // ── Bloquear submit si el documento no es válido ──
+    document.querySelector('form').addEventListener('submit', function(e) {
+      if (!validarNumDoc()) {
+        e.preventDefault();
+        numDoc.focus();
+      }
+    }, true);
+  }
+</script>
+
+<script>
+  // ── Validación nombres, apellidos, correo y teléfono ────────────────
+
+  // Letras (incluyendo tildes y ñ), espacios y guion
+  const REGEX_NOMBRE = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s-]+$/;
+  // Teléfono: solo dígitos
+  const REGEX_TEL    = /^[0-9]+$/;
+  // Correo — estructura completa:
+  //   local:  letras, números, . _ % + -
+  //   @
+  //   dominio: letras, números, . -
+  //   .TLD: mínimo 2 letras (ej: .co .com .org .info .biz)
+  const REGEX_CORREO_FULL = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+  // Caracteres permitidos en correo (para limpiar pegado)
+  const LIMPIAR_CORREO    = /[^a-zA-Z0-9@.\-_%+]/g;
+
+  function crearMsgEl(campo) {
+    const id = 'msg-' + campo.id;
+    let el = document.getElementById(id);
+    if (!el) {
+      el = document.createElement('p');
+      el.id = id;
+      el.style.cssText = 'font-size:12px; margin-top:4px; font-weight:600; min-height:16px;';
+      campo.parentNode.appendChild(el);
+    }
+    return el;
+  }
+
+  function validarCampo(campo, regex, etiqueta) {
+    const val = campo.value.trim();
+    const msg = crearMsgEl(campo);
+    if (!val) { msg.textContent = ''; campo.style.borderColor = ''; return true; }
+    if (!regex.test(val)) {
+      campo.style.borderColor = '#D32F2F';
+      msg.style.color = '#D32F2F';
+      msg.textContent = `❌ ${etiqueta} contiene caracteres no permitidos`;
+      return false;
+    }
+    // Validación especial: celular debe tener exactamente 10 dígitos
+    if (campo.id === 'tel' && val.length !== 10) {
+      campo.style.borderColor = '#D32F2F';
+      msg.style.color = '#D32F2F';
+      msg.textContent = `❌ El celular debe tener exactamente 10 dígitos (actual: ${val.length})`;
+      return false;
+    }
+    campo.style.borderColor = '#4CAF50';
+    msg.style.color = '#2E7D32';
+    msg.textContent = campo.id === 'tel' ? '✅ Número válido' : '';
+    return true;
+  }
+
+  // ── Validación específica del correo con mensajes descriptivos ───────
+  function validarCorreo() {
+    const elMail = document.getElementById('mail');
+    if (!elMail) return true;
+    const val = elMail.value.trim();
+    const msg = crearMsgEl(elMail);
+
+    if (!val) {
+      msg.textContent = ''; elMail.style.borderColor = ''; return true;
+    }
+
+    // 1. Caracteres inválidos (ñ, tildes, símbolos no permitidos)
+    if (LIMPIAR_CORREO.test(val)) {
+      elMail.style.borderColor = '#D32F2F'; msg.style.color = '#D32F2F';
+      msg.textContent = '❌ El correo contiene caracteres no permitidos (no se admite ñ, tildes ni símbolos)';
+      return false;
+    }
+    // 2. Debe contener exactamente un "@"
+    const partes = val.split('@');
+    if (partes.length < 2) {
+      elMail.style.borderColor = '#D32F2F'; msg.style.color = '#D32F2F';
+      msg.textContent = '❌ Falta el símbolo "@"  —  Ej: pepito@gmail.com';
+      return false;
+    }
+    if (partes.length > 2) {
+      elMail.style.borderColor = '#D32F2F'; msg.style.color = '#D32F2F';
+      msg.textContent = '❌ El correo solo puede tener un "@"';
+      return false;
+    }
+    // 3. La parte local (antes del @) no puede estar vacía
+    if (!partes[0]) {
+      elMail.style.borderColor = '#D32F2F'; msg.style.color = '#D32F2F';
+      msg.textContent = '❌ Falta el nombre antes del "@"  —  Ej: pepito@gmail.com';
+      return false;
+    }
+    // 4. El dominio debe contener al menos un punto
+    if (!partes[1].includes('.')) {
+      elMail.style.borderColor = '#D32F2F'; msg.style.color = '#D32F2F';
+      msg.textContent = '❌ El dominio debe incluir un punto  —  Ej: pepito@gmail.com';
+      return false;
+    }
+    // 5. El TLD (después del último punto) debe tener mínimo 2 letras
+    const tld = partes[1].split('.').pop();
+    if (!tld || tld.length < 2 || !/^[a-zA-Z]+$/.test(tld)) {
+      elMail.style.borderColor = '#D32F2F'; msg.style.color = '#D32F2F';
+      msg.textContent = `❌ El dominio ".${tld || '?'}" no es válido — debe tener mínimo 2 letras (.com .co .org .net)`;
+      return false;
+    }
+    // 6. Estructura completa válida
+    if (!REGEX_CORREO_FULL.test(val)) {
+      elMail.style.borderColor = '#D32F2F'; msg.style.color = '#D32F2F';
+      msg.textContent = '❌ Formato de correo inválido  —  Ej: pepito@gmail.com';
+      return false;
+    }
+
+    elMail.style.borderColor = '#4CAF50'; msg.style.color = '#2E7D32';
+    msg.textContent = '✅ Correo válido';
+    return true;
+  }
+
+  // Registrar eventos del correo por separado
+  const elMail = document.getElementById('mail');
+  if (elMail) {
+    elMail.addEventListener('beforeinput', function(e) {
+      if (!e.data) return;
+      if (LIMPIAR_CORREO.test(e.data)) e.preventDefault();
+    });
+    elMail.addEventListener('input', function() {
+      elMail.value = elMail.value.replace(LIMPIAR_CORREO, '');
+      validarCorreo();
+    });
+    elMail.addEventListener('blur', validarCorreo);
+  }
+
+  // ── Campos de texto genéricos (excluye mail que tiene su propia lógica) ─
+  const camposTexto = [
+    { id: 'nom1', regex: REGEX_NOMBRE, label: 'Primer nombre',    limpiar: /[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s-]/g },
+    { id: 'nom2', regex: REGEX_NOMBRE, label: 'Segundo nombre',   limpiar: /[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s-]/g },
+    { id: 'ape1', regex: REGEX_NOMBRE, label: 'Primer apellido',  limpiar: /[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s-]/g },
+    { id: 'ape2', regex: REGEX_NOMBRE, label: 'Segundo apellido', limpiar: /[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s-]/g },
+    { id: 'tel',  regex: REGEX_TEL,    label: 'Celular',          limpiar: /[^0-9]/g },
+  ];
+
+  camposTexto.forEach(function(cfg) {
+    const el = document.getElementById(cfg.id);
+    if (!el) return;
+
+    // beforeinput: bloquear carácter antes de entrar
+    el.addEventListener('beforeinput', function(e) {
+      if (!e.data) return;
+      if (!cfg.regex.test(el.value + e.data)) {
+        // verificar si solo el nuevo carácter es inválido
+        if (e.data.replace(cfg.limpiar, '') !== e.data) {
+          e.preventDefault();
+        }
+      }
+    });
+
+    // input: limpiar si se pegó texto inválido (Ctrl+V)
+    el.addEventListener('input', function() {
+      const cursor = el.selectionStart;
+      const limpio = el.value.replace(cfg.limpiar, '');
+      if (limpio !== el.value) {
+        el.value = limpio;
+        // Restaurar posición del cursor
+        el.setSelectionRange(cursor - (el.value.length - limpio.length), cursor - (el.value.length - limpio.length));
+      }
+      validarCampo(el, cfg.regex, cfg.label);
+    });
+
+    // Validar también al perder el foco
+    el.addEventListener('blur', function() {
+      validarCampo(el, cfg.regex, cfg.label);
+    });
+  });
+
+  // ── Bloquear submit si algún campo es inválido ───────────────────────
+  document.querySelector('form').addEventListener('submit', function(e) {
+    let hayError = false;
+    // Validar campos genéricos
+    camposTexto.forEach(function(cfg) {
+      const el = document.getElementById(cfg.id);
+      if (el && !validarCampo(el, cfg.regex, cfg.label)) hayError = true;
+    });
+    // Validar correo con su lógica específica
+    if (!validarCorreo()) hayError = true;
+
+    if (hayError) {
+      e.preventDefault();
+      // Foco al primer campo con error
+      for (let cfg of camposTexto) {
+        const el = document.getElementById(cfg.id);
+        if (el && !validarCampo(el, cfg.regex, cfg.label)) { el.focus(); return; }
+      }
+      // Si el error es en el correo
+      if (!validarCorreo()) { document.getElementById('mail').focus(); }
+    }
+  });
+</script>
+
+<script>
+  // ── Validación contraseña en tiempo real (solo editar) ──
+  const nuevaPass    = document.querySelector('input[name="nueva_password"]');
+  const confirmaPass = document.querySelector('input[name="confirmar_password"]');
+
+  if (nuevaPass && confirmaPass) {
+
+    function mostrarError(msg) {
+      nuevaPass.style.borderColor    = '#D32F2F';
+      confirmaPass.style.borderColor = '#D32F2F';
+      msgEl().style.color   = '#D32F2F';
+      msgEl().textContent   = '❌ ' + msg;
+      return false;
+    }
+
+    function mostrarOk(msg) {
+      nuevaPass.style.borderColor    = '#4CAF50';
+      confirmaPass.style.borderColor = '#4CAF50';
+      msgEl().style.color   = '#2E7D32';
+      msgEl().textContent   = '✅ ' + msg;
+      return true;
+    }
+
+    function limpiar() {
+      nuevaPass.style.borderColor    = '';
+      confirmaPass.style.borderColor = '';
+      msgEl().textContent = '';
+      return true;
+    }
+
+    function msgEl() {
+      let el = document.getElementById('pass-msg');
+      if (!el) {
+        el = document.createElement('p');
+        el.id = 'pass-msg';
+        el.style.cssText = 'font-size:12px; margin-top:6px; font-weight:600;';
+        confirmaPass.parentNode.appendChild(el);
+      }
+      return el;
+    }
+
+    function validarPasswords() {
+      const v1 = nuevaPass.value.trim();
+      const v2 = confirmaPass.value.trim();
+
+      // ✅ Ambas vacías → no se cambia contraseña, permitir guardar
+      if (!v1 && !v2) return limpiar();
+
+      // ❌ Solo una tiene texto
+      if (v1 && !v2) return mostrarError('Debes confirmar la nueva contraseña');
+      if (!v1 && v2) return mostrarError('Debes ingresar la nueva contraseña');
+
+      // ❌ Ambas tienen texto pero menos de 6 caracteres
+      if (v1.length < 6) return mostrarError('Mínimo 6 caracteres');
+
+      // ❌ Ambas tienen texto pero no coinciden
+      if (v1 !== v2) return mostrarError('Las contraseñas no coinciden');
+
+      // ✅ Ambas iguales y válidas
+      return mostrarOk('Las contraseñas coinciden');
+    }
+
+    nuevaPass.addEventListener('input', validarPasswords);
+    confirmaPass.addEventListener('input', validarPasswords);
+
+    // Bloquear envío del formulario si la validación falla
+    document.querySelector('form').addEventListener('submit', function(e) {
+      const docOk  = (typeof validarNumDoc  === 'function') ? validarNumDoc()  : true;
+      const passOk = validarPasswords();
+      if (!docOk || !passOk) {
+        e.preventDefault();
+        if (!docOk) { numDoc && numDoc.focus(); }
+        else if (!passOk) { nuevaPass.value ? confirmaPass.focus() : nuevaPass.focus(); }
+      }
+    });
+  }
+</script>
+      </div>
+    </div>
+  </main>
+
+
+<script>
+  const inputFoto  = document.getElementById('foto-usuario');
+  const previewFoto = document.getElementById('preview-foto');
+  const nombreFoto  = document.getElementById('nombre-archivo-foto');
+  if (inputFoto) {
+    inputFoto.addEventListener('change', function() {
+      const file = this.files[0];
+      if (!file) return;
+      if (file.size > 6 * 1024 * 1024) {
+        alert('La foto no puede superar los 6 MB');
+        this.value = ''; return;
+      }
+      nombreFoto.textContent = '📎 ' + file.name;
+      const reader = new FileReader();
+      reader.onload = e => {
+        previewFoto.src     = e.target.result;
+        previewFoto.style.width   = '100%';
+        previewFoto.style.height  = '100%';
+        previewFoto.style.opacity = '1';
+        previewFoto.style.objectFit = 'cover';
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  // ── Toggle visual del selector de rol ───────────────────────
+  function toggleRolStyle() {
+    const esAdmin  = document.querySelector('input[name="rol"][value="1"]').checked;
+    const lblAdmin = document.getElementById('lbl-rol-admin');
+    const lblClien = document.getElementById('lbl-rol-cliente');
+    if (esAdmin) {
+      lblAdmin.style.border     = '2px solid var(--verde-oscuro)';
+      lblAdmin.style.background = '#e8f5e9';
+      lblAdmin.style.color      = 'var(--verde-oscuro)';
+      lblClien.style.border     = '2px solid #ddd';
+      lblClien.style.background = '';
+      lblClien.style.color      = '#555';
+    } else {
+      lblClien.style.border     = '2px solid var(--verde-oscuro)';
+      lblClien.style.background = '#e8f5e9';
+      lblClien.style.color      = 'var(--verde-oscuro)';
+      lblAdmin.style.border     = '2px solid #ddd';
+      lblAdmin.style.background = '';
+      lblAdmin.style.color      = '#555';
+    }
+  }
+</script>
+</body>
+</html>

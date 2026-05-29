@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Venta #{{ pedido.Id_Venta }} — Los Boyacos</title>
+  <style>
+    :root { --verde-oscuro:#1B5E20; --verde-claro:#388E3C; --amarillo:#FDB913; --bg:#f5f3ee; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:'Segoe UI',sans-serif; background:var(--bg); }
+    header { background:var(--verde-oscuro); padding:14px 24px;
+             display:flex; align-items:center; justify-content:space-between; }
+    .logo { color:white; font-weight:900; font-size:17px; display:flex; align-items:center; gap:10px; }
+    .logo-circle { background:var(--amarillo); color:var(--verde-oscuro); width:36px; height:36px;
+                   border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:13px; }
+    .btn-volver { background:var(--amarillo); color:var(--verde-oscuro); padding:8px 18px;
+                  border-radius:20px; font-weight:700; text-decoration:none; font-size:13px; }
+    main  { max-width:780px; margin:28px auto; padding:0 16px; }
+    .card { background:white; border-radius:14px; box-shadow:0 2px 10px rgba(0,0,0,.08);
+            overflow:hidden; margin-bottom:20px; }
+    .card-header { background:var(--verde-oscuro); color:white; padding:14px 20px;
+                   font-size:15px; font-weight:800; display:flex; justify-content:space-between; align-items:center; }
+    .card-body  { padding:20px; }
+    .info-grid  { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .info-item label { font-size:11px; color:#888; font-weight:700; text-transform:uppercase; }
+    .info-item span  { display:block; font-size:14px; font-weight:600; color:#333; margin-top:2px; }
+    table { width:100%; border-collapse:collapse; }
+    th { background:#f5f5f5; padding:10px 14px; font-size:12px; text-align:left;
+         color:#555; text-transform:uppercase; }
+    td { padding:12px 14px; font-size:13px; border-bottom:1px solid #f0f0f0; }
+    .badge { padding:4px 12px; border-radius:20px; font-size:12px; font-weight:700; }
+    .badge-Pendiente  { background:#fff8e1; color:#f57c00; }
+    .badge-Confirmado { background:#e3f2fd; color:#1565c0; }
+    .badge-En-camino  { background:#e8f5e9; color:#2e7d32; }
+    .badge-Entregado  { background:#e8f5e9; color:#1b5e20; }
+    .badge-Cancelado  { background:#fce4ec; color:#c62828; }
+    .estados-form { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:12px; }
+    .btn-estado { padding:8px 16px; border:none; border-radius:10px; font-weight:700;
+                  font-size:12px; cursor:pointer; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <div class="logo-circle">LB</div>LOS BOYACOS
+  </div>
+  {% if usuario_session and usuario_session.rol == 'Admin' %}
+    <a class="btn-volver" href="/ventas">← Pedidos</a>
+  {% else %}
+    <a class="btn-volver" href="/mis-pedidos">← Mis pedidos</a>
+  {% endif %}
+</header>
+
+<main>
+  {% if request.args.get('msg') %}
+  <div style="background:#e8f5e9;color:#2e7d32;border:1px solid #a5d6a7;
+              border-radius:10px;padding:12px 18px;margin-bottom:16px;font-weight:600;">
+    ✅ {{ request.args.get('msg') }}
+  </div>
+  {% endif %}
+
+  <!-- Info del pedido -->
+  <div class="card">
+    <div class="card-header">
+      <span>📦 Venta #{{ pedido.Id_Venta }}</span>
+      <span class="badge badge-{{ pedido.Estado_Venta|replace(' ','-') }}">
+        {{ pedido.Estado_Venta }}
+      </span>
+    </div>
+    <div class="card-body">
+      <div class="info-grid">
+        <div class="info-item">
+          <label>👤 Cliente</label>
+          <span>{{ pedido.Nom1_Usuario }} {{ pedido.Ape1_Usuario }}</span>
+        </div>
+        <div class="info-item">
+          <label>📅 Fecha</label>
+          <span>{{ pedido.Fech_Venta.strftime('%d/%m/%Y %H:%M') }}</span>
+        </div>
+        <div class="info-item">
+          <label>📍 Dirección</label>
+          <span>{{ pedido.Direccion or 'No especificada' }}</span>
+        </div>
+        <div class="info-item">
+          <label>💬 Observaciones</label>
+          <span>{{ pedido.Observaciones or 'Ninguna' }}</span>
+        </div>
+      </div>
+
+      <!-- Cambiar estado (solo admin) -->
+      {% if usuario_session and usuario_session.rol == 'Admin' %}
+      <hr style="margin:16px 0;border:none;border-top:1px solid #eee;">
+      <label style="font-size:12px;font-weight:700;color:#555;">🔄 Cambiar estado:</label>
+      <div class="estados-form">
+        {% for est in ['Pendiente','Confirmado','En camino','Entregado','Cancelado'] %}
+        <form method="POST" action="/ventas/{{ pedido.Id_Venta }}/estado" style="display:inline;">
+          <input type="hidden" name="estado" value="{{ est }}">
+          <button class="btn-estado"
+            style="background:{{ '#FDB913' if pedido.Estado_Venta == est else '#f0f0f0' }};
+                   color:{{ '#1B5E20' if pedido.Estado_Venta == est else '#555' }};">
+            {{ est }}
+          </button>
+        </form>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Detalle de productos -->
+  <div class="card">
+    <div class="card-header">🛒 Productos del pedido</div>
+    <div class="card-body" style="padding:0;">
+      <table>
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th style="text-align:center;">Cant.</th>
+            <th style="text-align:right;">Precio Unit.</th>
+            <th style="text-align:right;">Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in items %}
+          <tr>
+            <td>
+              {% if item.Img_Producto %}
+              <img src="/static/img/productos/{{ item.Img_Producto }}"
+                   style="width:36px;height:36px;object-fit:contain;border-radius:6px;
+                          vertical-align:middle;margin-right:8px;">
+              {% endif %}
+              {{ item.Nom_Producto }}
+            </td>
+            <td style="text-align:center;font-weight:700;">{{ item.Cantidad }}</td>
+            <td style="text-align:right;">
+              ${{ "{:,.0f}".format(item.Vlr_Unitario|float).replace(",",".") }}
+            </td>
+            <td style="text-align:right;font-weight:700;color:var(--verde-oscuro);">
+              ${{ "{:,.0f}".format(item.Vlr_SubTotal|float).replace(",",".") }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr style="border-top:2px solid #eee;">
+            <td colspan="3" style="padding:14px;font-weight:800;font-size:15px;">TOTAL</td>
+            <td style="text-align:right;font-size:20px;font-weight:900;
+                       color:var(--verde-oscuro);padding:14px;">
+              ${{ "{:,.0f}".format(pedido.Total_Venta|float).replace(",",".") }}
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</main>
+</body>
+</html>

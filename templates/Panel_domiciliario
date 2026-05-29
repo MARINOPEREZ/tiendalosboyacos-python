@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Domiciliario — Los Boyacos</title>
+  <style>
+    :root{--verde-oscuro:#1B5E20;--verde-claro:#388E3C;--amarillo:#FDB913;
+          --rojo:#C62828;--bg:#f5f3ee;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Segoe UI',sans-serif;background:var(--bg);}
+    header{background:var(--verde-oscuro);padding:14px 20px;
+           display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+    .logo{color:white;font-weight:900;font-size:16px;display:flex;align-items:center;gap:10px;}
+    .logo-circle{background:var(--amarillo);color:var(--verde-oscuro);width:36px;height:36px;
+                 border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;}
+    .hbtns{display:flex;gap:8px;}
+    .btn{padding:7px 14px;border-radius:16px;font-weight:700;text-decoration:none;font-size:12px;}
+    .btn-am{background:var(--amarillo);color:var(--verde-oscuro);}
+    .btn-out{background:rgba(255,255,255,.15);color:white;border:1px solid rgba(255,255,255,.35);}
+    .banner{background:linear-gradient(135deg,#1B5E20,#388E3C);color:white;padding:24px 20px;}
+    .banner h1{font-size:22px;font-weight:900;margin-bottom:4px;}
+    .banner p{opacity:.85;font-size:13px;}
+    .stats{display:flex;gap:12px;margin-top:14px;flex-wrap:wrap;}
+    .stat{background:rgba(255,255,255,.15);border-radius:10px;padding:10px 18px;text-align:center;}
+    .stat .n{font-size:20px;font-weight:900;}
+    .stat .l{font-size:10px;opacity:.8;margin-top:2px;}
+    main{max-width:860px;margin:24px auto;padding:0 16px 40px;}
+    .seccion-titulo{font-size:15px;font-weight:900;color:var(--verde-oscuro);
+                    margin:20px 0 10px;display:flex;align-items:center;gap:8px;}
+    .seccion-titulo span{flex:1;height:2px;background:var(--amarillo);}
+    /* ── Tarjeta pedido ── */
+    .pedido-card{background:white;border-radius:14px;
+                 box-shadow:0 2px 10px rgba(0,0,0,.08);margin-bottom:14px;overflow:hidden;}
+    .pc-header{padding:12px 18px;display:flex;justify-content:space-between;
+               align-items:center;flex-wrap:wrap;gap:6px;border-bottom:1px solid #f0f0f0;}
+    .pc-id{font-weight:900;color:var(--verde-oscuro);font-size:15px;}
+    .pc-fecha{font-size:11px;color:#999;}
+    .pc-body{padding:14px 18px;display:flex;justify-content:space-between;
+             align-items:flex-end;flex-wrap:wrap;gap:12px;}
+    .pc-info{font-size:13px;color:#555;display:flex;flex-direction:column;gap:4px;}
+    .pc-info b{color:#333;}
+    .pc-total{font-size:20px;font-weight:900;color:var(--verde-oscuro);text-align:right;}
+    .pc-total small{display:block;font-size:11px;color:#999;font-weight:400;}
+    /* ── Form confirmar ── */
+    .pc-footer{padding:12px 18px;background:#f9f9f9;border-top:1px solid #f0f0f0;
+               display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+    .select-cobro{padding:8px 12px;border:1.5px solid #ddd;border-radius:10px;
+                  font-size:13px;font-weight:600;background:white;cursor:pointer;}
+    .btn-entregar{background:var(--verde-oscuro);color:white;border:none;
+                  padding:9px 20px;border-radius:10px;font-size:13px;
+                  font-weight:800;cursor:pointer;}
+    .btn-entregar:hover{background:var(--verde-claro);}
+    /* ── Badge ── */
+    .badge{padding:4px 10px;border-radius:14px;font-size:11px;font-weight:700;}
+    .badge-Pendiente {background:#fff8e1;color:#f57c00;}
+    .badge-Confirmado{background:#e3f2fd;color:#1565c0;}
+    .badge-En-camino {background:#e8f5e9;color:#2e7d32;}
+    .badge-Entregado {background:#e8f5e9;color:#1b5e20;}
+    /* ── Historial ── */
+    .hist-item{background:white;border-radius:10px;padding:12px 16px;
+               margin-bottom:8px;display:flex;justify-content:space-between;
+               align-items:center;flex-wrap:wrap;gap:8px;
+               border-left:4px solid var(--verde-claro);}
+    .hist-info{font-size:13px;color:#555;}
+    .hist-total{font-weight:900;color:var(--verde-oscuro);font-size:15px;}
+    .empty{text-align:center;padding:36px;color:#aaa;background:white;
+           border-radius:14px;font-size:14px;}
+    .empty .icon{font-size:48px;margin-bottom:8px;}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-circle">🛵</div>
+    <div>
+      <div style="font-size:9px;opacity:.7;font-weight:400;">DOMICILIARIO</div>
+      LOS BOYACOS
+    </div>
+  </div>
+  <div class="hbtns">
+    <span style="color:white;font-size:12px;opacity:.85;align-self:center;">
+      👤 {{ usuario_session.nombre }}
+    </span>
+    <a class="btn btn-out" href="/logout">🚪 Salir</a>
+  </div>
+</header>
+
+<div class="banner">
+  <h1>🛵 Panel de Domiciliario</h1>
+  <p>Pedidos asignados para entrega a domicilio</p>
+  <div class="stats">
+    <div class="stat">
+      <div class="n">{{ pendientes|length }}</div>
+      <div class="l">Pendientes</div>
+    </div>
+    <div class="stat">
+      <div class="n">{{ entregados_hoy|length }}</div>
+      <div class="l">Entregados hoy</div>
+    </div>
+    {% if entregados_hoy %}
+    <div class="stat">
+      <div class="n">
+        ${{ "{:,.0f}".format(entregados_hoy|sum(attribute='Total_Venta')|float).replace(",",".") }}
+      </div>
+      <div class="l">Recaudado hoy</div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<main>
+
+  <!-- ── Pedidos pendientes ──────────────────────────── -->
+  <div class="seccion-titulo">
+    🕐 Pedidos pendientes de entrega <span></span>
+  </div>
+
+  {% if pendientes %}
+    {% for v in pendientes %}
+    <div class="pedido-card">
+      <div class="pc-header">
+        <div>
+          <div class="pc-id">📦 Pedido #{{ v.Id_Venta }}</div>
+          <div class="pc-fecha">{{ v.Fech_Venta.strftime('%d/%m/%Y %H:%M') }}</div>
+        </div>
+        <span class="badge badge-{{ v.Estado_Venta|replace(' ','-') }}">
+          {{ v.Estado_Venta }}
+        </span>
+      </div>
+
+      <div class="pc-body">
+        <div class="pc-info">
+          <span>👤 <b>{{ v.Nom1_Usuario }} {{ v.Ape1_Usuario }}</b></span>
+          <span>📞 {{ v.Indicativo_Usuario or '+57' }} {{ v.Tel_Usuario }}</span>
+          <span>📍 {{ v.Direccion or 'Sin dirección especificada' }}</span>
+          {% if v.Observaciones %}
+          <span>💬 {{ v.Observaciones }}</span>
+          {% endif %}
+          <span>
+            {% if v.Metodo_Pago == 'Transferencia QR' %}
+              📲 Ya pagó por transferencia QR
+            {% else %}
+              💵 Cobrar en efectivo al entregar
+            {% endif %}
+          </span>
+        </div>
+        <div class="pc-total">
+          ${{ "{:,.0f}".format(v.Total_Venta|float).replace(",",".") }}
+          <small>Total del pedido</small>
+        </div>
+      </div>
+
+      <!-- Solo mostrar formulario de confirmación si el pago es en efectivo -->
+      <div class="pc-footer">
+        {% if v.Metodo_Pago == 'Transferencia QR' %}
+          <span style="font-size:13px;color:#555;">
+            ✅ Pago ya realizado por QR — solo confirma la entrega
+          </span>
+          <form method="POST" action="/domiciliario/entregar/{{ v.Id_Venta }}">
+            <input type="hidden" name="metodo_cobro" value="Transferencia QR">
+            <button class="btn-entregar" type="submit">
+              ✅ Confirmar entrega
+            </button>
+          </form>
+        {% else %}
+          <span style="font-size:13px;color:#555;font-weight:600;">
+            💳 Método de cobro:
+          </span>
+          <form method="POST" action="/domiciliario/entregar/{{ v.Id_Venta }}"
+                style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <select name="metodo_cobro" class="select-cobro">
+              <option value="Efectivo">💵 Efectivo</option>
+              <option value="Transferencia QR">📲 Transferencia QR</option>
+              <option value="Tarjeta">💳 Tarjeta</option>
+            </select>
+            <button class="btn-entregar" type="submit"
+                    onclick="return confirm('¿Confirmar entrega del pedido #{{ v.Id_Venta }}?')">
+              ✅ Confirmar entrega y pago
+            </button>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+
+  {% else %}
+    <div class="empty">
+      <div class="icon">🎉</div>
+      <p>No hay pedidos pendientes de entrega.</p>
+    </div>
+  {% endif %}
+
+  <!-- ── Historial del día ───────────────────────────── -->
+  {% if entregados_hoy %}
+  <div class="seccion-titulo">
+    ✅ Entregados hoy <span></span>
+  </div>
+  {% for v in entregados_hoy %}
+  <div class="hist-item">
+    <div class="hist-info">
+      <b>#{{ v.Id_Venta }}</b> — {{ v.Nom1_Usuario }} {{ v.Ape1_Usuario }}<br>
+      <span style="font-size:11px;">{{ v.Direccion or '—' }} · {{ v.Metodo_Pago }}</span>
+    </div>
+    <div class="hist-total">
+      ${{ "{:,.0f}".format(v.Total_Venta|float).replace(",",".") }}
+    </div>
+  </div>
+  {% endfor %}
+  {% endif %}
+
+</main>
+</body>
+</html>

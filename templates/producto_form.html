@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ titulo }} — Los Boyacos</title>
+  <style>
+    :root {
+      --verde-oscuro: #1B5E20;
+      --verde-medio: #2E7D32;
+      --verde-claro: #4CAF50;
+      --amarillo: #FDB913;
+      --amarillo-claro: #FFF9E6;
+      --rojo-logo: #D32F2F;
+      --bg: #f4f6f0;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Segoe UI',sans-serif; background:var(--bg); color:#333; }
+
+    header {
+      background: linear-gradient(135deg, var(--verde-oscuro), var(--verde-medio));
+      padding: 0 20px;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.3);
+    }
+    .header-inner {
+      max-width:1200px; margin:0 auto;
+      display:flex; align-items:center; justify-content:space-between;
+      padding: 14px 0;
+    }
+    .logo-wrap { display:flex; align-items:center; gap:10px; text-decoration:none; }
+    .logo-icon {
+      width:48px; height:48px; background:var(--amarillo);
+      border-radius:50%; display:flex; align-items:center;
+      justify-content:center; font-size:22px; font-weight:900;
+      color:var(--verde-oscuro); border:3px solid white;
+    }
+    .logo-text { color:white; }
+    .logo-text strong { font-size:18px; }
+    .logo-text span { display:block; font-size:11px; opacity:.8; }
+    .nav-links { display:flex; gap:10px; }
+    .btn-nav {
+      background:var(--amarillo); color:var(--verde-oscuro);
+      border:none; border-radius:20px; padding:8px 18px;
+      font-weight:700; font-size:13px; cursor:pointer;
+      text-decoration:none;
+    }
+    .btn-nav.outline {
+      background:transparent; color:white;
+      border:2px solid rgba(255,255,255,.5);
+    }
+
+    main { max-width:700px; margin:30px auto; padding:0 16px; }
+
+    .breadcrumb {
+      display:flex; align-items:center; gap:8px;
+      font-size:13px; color:#888; margin-bottom:20px;
+    }
+    .breadcrumb a {
+      color:var(--verde-oscuro); text-decoration:none; font-weight:600;
+    }
+
+    /* FORM CARD */
+    .form-card {
+      background:white; border-radius:20px;
+      box-shadow:0 4px 20px rgba(0,0,0,.1); overflow:hidden;
+    }
+    .form-header {
+      background: linear-gradient(135deg, var(--verde-oscuro), var(--verde-medio));
+      padding:24px 28px; display:flex; align-items:center; gap:16px;
+    }
+    .form-icono {
+      width:56px; height:56px; background:var(--amarillo);
+      border-radius:14px; display:flex; align-items:center;
+      justify-content:center; font-size:28px; border:3px solid rgba(255,255,255,.3);
+    }
+    .form-header-info h1 { color:white; font-size:22px; font-weight:900; }
+    .form-header-info p { color:rgba(255,255,255,.8); font-size:14px; margin-top:4px; }
+
+    .form-body { padding:28px; }
+
+    /* CAMPOS */
+    .campo-grupo {
+      margin-bottom:20px;
+    }
+    .campo-grupo label {
+      display:block; font-size:13px; font-weight:700;
+      color:#555; margin-bottom:7px; text-transform:uppercase;
+      letter-spacing:.4px;
+    }
+    .campo-grupo input,
+    .campo-grupo textarea,
+    .campo-grupo select {
+      width:100%; padding:12px 16px;
+      border:2px solid #e8e8e8; border-radius:12px;
+      font-size:15px; font-family:'Segoe UI',sans-serif;
+      transition:.2s; background:#fafafa; color:#333;
+    }
+    .campo-grupo input:focus,
+    .campo-grupo textarea:focus,
+    .campo-grupo select:focus {
+      border-color:var(--verde-claro); outline:none;
+      background:white; box-shadow:0 0 0 3px rgba(76,175,80,.1);
+    }
+    .campo-grupo textarea { resize:vertical; min-height:90px; }
+
+    .campos-dobles {
+      display:grid; grid-template-columns:1fr 1fr; gap:16px;
+    }
+
+    /* ALERTAS */
+    .alerta {
+      padding:14px 18px; border-radius:12px; margin-bottom:20px;
+      font-size:14px; font-weight:600; display:flex; align-items:center; gap:10px;
+    }
+    .alerta-exito { background:#e8f5e9; color:var(--verde-oscuro); border-left:4px solid var(--verde-claro); }
+    .alerta-error { background:#fde8e8; color:var(--rojo-logo); border-left:4px solid var(--rojo-logo); }
+
+    /* BOTONES */
+    .form-footer {
+      display:flex; gap:12px; justify-content:flex-end;
+      padding-top:20px; border-top:2px solid #f0f0f0; margin-top:8px;
+    }
+    .btn-cancelar {
+      background:#f0f0f0; color:#666;
+      border:none; border-radius:20px; padding:11px 24px;
+      font-weight:700; font-size:14px; cursor:pointer;
+      text-decoration:none; transition:.2s;
+    }
+    .btn-cancelar:hover { background:#e0e0e0; }
+    .btn-guardar {
+      background:var(--verde-claro); color:white;
+      border:none; border-radius:20px; padding:11px 28px;
+      font-weight:700; font-size:14px; cursor:pointer; transition:.2s;
+    }
+    .btn-guardar:hover { background:var(--verde-oscuro); }
+    .btn-guardar.editar { background:var(--amarillo); color:var(--verde-oscuro); }
+    .btn-guardar.editar:hover { background:#e6a800; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <a class="logo-wrap" href="/">
+        <div class="logo-icon">LB</div>
+        <div class="logo-text">
+          <strong>Los Boyacos</strong>
+          <span>Tienda Virtual</span>
+        </div>
+      </a>
+      <div class="nav-links">
+        <a class="btn-nav outline" href="/productos">← Productos</a>
+        <a class="btn-nav" href="/">Inicio</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <div class="breadcrumb">
+      <a href="/">Inicio</a> ›
+      <a href="/productos">Productos</a> ›
+      <span>{{ titulo }}</span>
+    </div>
+
+    <div class="form-card">
+
+      <div class="form-header">
+        <div class="form-icono">📦</div>
+        <div class="form-header-info">
+          <h1>{{ titulo }}</h1>
+          <p>{{ subtitulo }}</p>
+        </div>
+      </div>
+
+      <div class="form-body">
+
+        <!-- ALERTA RESULTADO -->
+        {% if mensaje %}
+          <div class="alerta {{ 'alerta-exito' if exito else 'alerta-error' }}">
+            {{ '✅' if exito else '❌' }} {{ mensaje }}
+          </div>
+        {% endif %}
+
+        <!-- FORMULARIO -->
+        <form method="POST" enctype="multipart/form-data" autocomplete="off">
+
+          <div class="campo-grupo">
+            <label>📦 Nombre del producto *</label>
+            <input type="text" name="nom" required
+              placeholder="Ej: Café Boyacense 500g"
+              value="{{ producto.Nom_Producto if producto else '' }}">
+          </div>
+
+          <!-- IMAGEN DEL PRODUCTO -->
+          <div class="campo-grupo">
+            <label>📷 Imagen del producto</label>
+            <div style="display:flex; gap:14px; align-items:flex-start; flex-wrap:wrap;">
+              <div id="preview-prod-wrap" style="width:120px; height:120px; border-radius:12px;
+                   border:2px dashed #ccc; overflow:hidden; flex-shrink:0; background:#f9f9f9;
+                   display:flex; align-items:center; justify-content:center;">
+                {% if producto and producto.Img_Producto %}
+                  <img id="preview-prod"
+                       src="{{ url_for('static', filename='img/productos/' + producto.Img_Producto) }}"
+                       style="width:100%; height:100%; object-fit:cover;">
+                {% else %}
+                  <img id="preview-prod"
+                       src="{{ url_for('static', filename='img/default/producto.svg') }}"
+                       style="width:80%; opacity:.4;">
+                {% endif %}
+              </div>
+              <div style="flex:1; min-width:180px;">
+                <input type="file" name="imagen" id="imagen-prod"
+                  accept=".jpg,.jpeg,.png,.webp"
+                  style="display:none;">
+                <button type="button"
+                  onclick="document.getElementById('imagen-prod').click()"
+                  style="background:var(--verde-oscuro); color:white; border:none;
+                         padding:9px 18px; border-radius:10px; cursor:pointer;
+                         font-weight:700; font-size:13px; margin-bottom:8px;">
+                  📁 Seleccionar imagen
+                </button>
+                <p style="font-size:11px; color:#888; margin:0;">
+                  Formatos: JPG, PNG, WEBP — Máx. 6 MB<br>
+                  {% if producto and producto.Img_Producto %}
+                    Dejar vacío para conservar la imagen actual.
+                  {% endif %}
+                </p>
+                <p id="nombre-archivo-prod"
+                   style="font-size:12px; color:#555; margin-top:6px; font-weight:600;"></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- CATEGORÍAS -->
+          <div class="campo-grupo">
+            <label>🏷️ Categoría *</label>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;">
+              {% for cat in categorias %}
+              <label style="display:flex;align-items:center;gap:6px;
+                            background:#f5f5f5;border-radius:20px;
+                            padding:6px 14px;cursor:pointer;font-size:13px;
+                            border:2px solid transparent;transition:.2s;"
+                     class="cat-chip"
+                     style="border-color: {% if cat.Id_Categoria|string in cats_producto %}var(--verde-oscuro){% else %}transparent{% endif %}">
+                <input type="checkbox" name="categorias"
+                       value="{{ cat.Id_Categoria }}"
+                       style="accent-color:var(--verde-oscuro);"
+                       {{ 'checked' if cat.Id_Categoria|string in cats_producto }}>
+                {{ cat.Nom_Categoria }}
+              </label>
+              {% endfor %}
+            </div>
+            <p id="msg-cat" style="font-size:12px;margin-top:6px;font-weight:600;min-height:16px;color:#D32F2F;"></p>
+          </div>
+
+          <div class="campo-grupo">
+            <label>📝 Descripción</label>
+            <textarea name="descripcion"
+              placeholder="Describe brevemente el producto...">{{ producto.Descripcion if producto else '' }}</textarea>
+          </div>
+
+          <div class="campos-dobles">
+            <div class="campo-grupo">
+              <label>💰 Precio unitario *</label>
+              <input type="text" name="vlr_unitario" id="vlr_unitario" required
+                placeholder="Ej: 15.000"
+                autocomplete="off"
+                value="{{ '{:,.0f}'.format(producto.Vlr_Unitario)|replace(',','.') if producto else '' }}">
+              <p id="msg-precio" style="font-size:12px;margin-top:4px;font-weight:600;min-height:16px;"></p>
+            </div>
+            <div class="campo-grupo">
+              <label>📦 Stock disponible *</label>
+              <input type="text" name="cant_stock" id="cant_stock" required
+                placeholder="Ej: 50" autocomplete="off"
+                value="{{ producto.Cant_Stock if producto else '' }}">
+              <p id="msg-stock" style="font-size:12px;margin-top:4px;font-weight:600;min-height:16px;"></p>
+            </div>
+          </div>
+
+          <div class="campos-dobles">
+            <div class="campo-grupo">
+              <label>🧾 IVA (%)</label>
+              <input type="text" name="iva" id="iva"
+                placeholder="Ej: 19" autocomplete="off"
+                value="{{ producto.IVA if producto else '0' }}">
+              <p id="msg-iva" style="font-size:12px;margin-top:4px;font-weight:600;min-height:16px;"></p>
+            </div>
+            <div class="campo-grupo">
+              <label>⏳ Fecha de vencimiento</label>
+              <input type="date" name="fech_vencimiento" id="fech_vencimiento"
+                min="2000-01-01" max="2099-12-31"
+                value="{{ producto.Fech_Vencimiento if producto else '' }}">
+              <p id="msg-fecha" style="font-size:12px;margin-top:4px;font-weight:600;min-height:16px;"></p>
+            </div>
+          </div>
+
+          <div class="form-footer">
+            <a class="btn-cancelar" href="/productos">Cancelar</a>
+            <button class="btn-guardar {{ 'editar' if producto else '' }}" type="submit">
+              {{ '💾 Guardar cambios' if producto else '➕ Agregar producto' }}
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </main>
+
+
+<script>
+  // ── Precio unitario: solo enteros, separador de miles con punto ──────
+  const elPrecio = document.getElementById('vlr_unitario');
+  const msgPrecio = document.getElementById('msg-precio');
+
+  function formatearPrecio(val) {
+    // Quitar todo menos dígitos
+    const num = val.replace(/[^0-9]/g, '');
+    if (!num) return '';
+    // Separador de miles con punto
+    return parseInt(num, 10).toLocaleString('es-CO').replace(/,/g, '.');
+  }
+
+  function validarPrecio() {
+    const raw = elPrecio.value.replace(/\./g, '').trim();
+    if (!raw) { msgPrecio.textContent = ''; elPrecio.style.borderColor = ''; return true; }
+    if (!/^[0-9]+$/.test(raw) || parseInt(raw) <= 0) {
+      elPrecio.style.borderColor = '#D32F2F';
+      msgPrecio.style.color = '#D32F2F';
+      msgPrecio.textContent = '❌ El precio debe ser un número entero mayor a 0';
+      return false;
+    }
+    elPrecio.style.borderColor = '#4CAF50';
+    msgPrecio.style.color = '#2E7D32';
+    msgPrecio.textContent = '✅ Precio válido: $' + elPrecio.value;
+    return true;
+  }
+
+  if (elPrecio) {
+    elPrecio.addEventListener('beforeinput', function(e) {
+      if (!e.data) return;
+      if (!/^[0-9]$/.test(e.data)) e.preventDefault();
+    });
+    elPrecio.addEventListener('input', function() {
+      const pos = elPrecio.selectionStart;
+      elPrecio.value = formatearPrecio(elPrecio.value);
+      validarPrecio();
+    });
+    elPrecio.addEventListener('blur', function() {
+      elPrecio.value = formatearPrecio(elPrecio.value);
+      validarPrecio();
+    });
+    // Antes de enviar: quitar puntos para que llegue el número limpio al backend
+    elPrecio.closest('form').addEventListener('submit', function() {
+      elPrecio.value = elPrecio.value.replace(/\./g, '');
+    });
+  }
+
+  // ── Stock: solo enteros no negativos ─────────────────────────────────
+  const elStock = document.getElementById('cant_stock');
+  const msgStock = document.getElementById('msg-stock');
+
+  function validarStock() {
+    const val = elStock.value.trim();
+    if (!val) { msgStock.textContent = ''; elStock.style.borderColor = ''; return true; }
+    if (!/^[0-9]+$/.test(val) || parseInt(val) < 0) {
+      elStock.style.borderColor = '#D32F2F';
+      msgStock.style.color = '#D32F2F';
+      msgStock.textContent = '❌ El stock debe ser un número entero mayor o igual a 0';
+      return false;
+    }
+    elStock.style.borderColor = '#4CAF50';
+    msgStock.textContent = '';
+    return true;
+  }
+
+  if (elStock) {
+    elStock.addEventListener('beforeinput', function(e) {
+      if (!e.data) return;
+      if (!/^[0-9]$/.test(e.data)) e.preventDefault();
+    });
+    elStock.addEventListener('input', function() {
+      elStock.value = elStock.value.replace(/[^0-9]/g, '');
+      validarStock();
+    });
+  }
+
+  // ── IVA: decimal entre 0 y 100, solo dígitos y punto ─────────────────
+  const elIva = document.getElementById('iva');
+  const msgIva = document.getElementById('msg-iva');
+
+  function validarIva() {
+    const val = elIva.value.trim();
+    if (!val) { msgIva.textContent = ''; elIva.style.borderColor = ''; return true; }
+    const num = parseFloat(val);
+    if (isNaN(num) || num < 0 || num > 100) {
+      elIva.style.borderColor = '#D32F2F';
+      msgIva.style.color = '#D32F2F';
+      msgIva.textContent = '❌ El IVA debe estar entre 0 y 100';
+      return false;
+    }
+    elIva.style.borderColor = '#4CAF50';
+    msgIva.textContent = '';
+    return true;
+  }
+
+  if (elIva) {
+    elIva.addEventListener('beforeinput', function(e) {
+      if (!e.data) return;
+      if (!/^[0-9.]$/.test(e.data)) e.preventDefault();
+    });
+    elIva.addEventListener('input', function() {
+      elIva.value = elIva.value.replace(/[^0-9.]/g, '');
+      validarIva();
+    });
+  }
+
+  // ── Fecha: año entre 2000 y 2099, no anterior a hoy ──────────────────
+  const elFecha = document.getElementById('fech_vencimiento');
+  const msgFecha = document.getElementById('msg-fecha');
+
+  function validarFecha() {
+    const val = elFecha.value;
+    if (!val) { msgFecha.textContent = ''; elFecha.style.borderColor = ''; return true; }
+    const fecha = new Date(val + 'T00:00:00');
+    const hoy   = new Date(); hoy.setHours(0,0,0,0);
+    const anio  = fecha.getFullYear();
+    if (anio < 2000 || anio > 2099) {
+      elFecha.style.borderColor = '#D32F2F';
+      msgFecha.style.color = '#D32F2F';
+      msgFecha.textContent = `❌ El año ${anio} no es válido. Debe estar entre 2000 y 2099`;
+      return false;
+    }
+    if (fecha < hoy) {
+      elFecha.style.borderColor = '#D32F2F';
+      msgFecha.style.color = '#D32F2F';
+      msgFecha.textContent = '❌ La fecha de vencimiento no puede ser anterior a hoy';
+      return false;
+    }
+    elFecha.style.borderColor = '#4CAF50';
+    msgFecha.style.color = '#2E7D32';
+    msgFecha.textContent = '✅ Fecha válida';
+    return true;
+  }
+
+  if (elFecha) {
+    elFecha.addEventListener('change', validarFecha);
+    elFecha.addEventListener('blur', validarFecha);
+  }
+
+  // ── Bloquear submit si algún campo falla ─────────────────────────────
+  document.querySelector('form').addEventListener('submit', function(e) {
+    // Validar que al menos una categoría esté seleccionada
+    const catChecks = document.querySelectorAll('input[name="categorias"]:checked');
+    const msgCat    = document.getElementById('msg-cat');
+    if (catChecks.length === 0) {
+      msgCat.textContent = '❌ Selecciona al menos una categoría';
+      e.preventDefault(); return;
+    } else {
+      msgCat.textContent = '';
+    }
+    const ok = validarPrecio() & validarStock() & validarIva() & validarFecha();
+    if (!ok) {
+      e.preventDefault();
+      // Foco al primer campo con error
+      for (const el of [elPrecio, elStock, elIva, elFecha]) {
+        if (el && el.style.borderColor === 'rgb(211, 47, 47)') {
+          el.focus(); break;
+        }
+      }
+    }
+  });
+</script>
+
+<script>
+  // Preview imagen producto
+  const inputImg = document.getElementById('imagen-prod');
+  const preview  = document.getElementById('preview-prod');
+  const nombreEl = document.getElementById('nombre-archivo-prod');
+  if (inputImg) {
+    inputImg.addEventListener('change', function() {
+      const file = this.files[0];
+      if (!file) return;
+      if (file.size > 6 * 1024 * 1024) {
+        alert('La imagen no puede superar los 6 MB');
+        this.value = '';
+        return;
+      }
+      nombreEl.textContent = '📎 ' + file.name;
+      const reader = new FileReader();
+      reader.onload = e => {
+        preview.src = e.target.result;
+        preview.style.width  = '100%';
+        preview.style.opacity = '1';
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+</script>
+</body>
+</html>

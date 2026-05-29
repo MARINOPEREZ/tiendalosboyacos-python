@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Eliminar Producto — Los Boyacos</title>
+  <style>
+    :root {
+      --verde-oscuro: #1B5E20; --verde-medio: #2E7D32;
+      --amarillo: #FDB913; --rojo-logo: #D32F2F; --bg: #f4f6f0;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Segoe UI',sans-serif; background:var(--bg); color:#333; }
+    header {
+      background: linear-gradient(135deg, var(--verde-oscuro), var(--verde-medio));
+      padding:0 20px; box-shadow:0 3px 15px rgba(0,0,0,0.3);
+    }
+    .header-inner {
+      max-width:1200px; margin:0 auto;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 0;
+    }
+    .logo-wrap { display:flex; align-items:center; gap:10px; text-decoration:none; }
+    .logo-icon {
+      width:48px; height:48px; background:var(--amarillo); border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-size:22px; font-weight:900; color:var(--verde-oscuro); border:3px solid white;
+    }
+    .logo-text { color:white; }
+    .logo-text strong { font-size:18px; }
+    .logo-text span { display:block; font-size:11px; opacity:.8; }
+    .btn-nav {
+      background:var(--amarillo); color:var(--verde-oscuro);
+      border:none; border-radius:20px; padding:8px 18px;
+      font-weight:700; font-size:13px; text-decoration:none;
+    }
+
+    main { max-width:500px; margin:40px auto; padding:0 16px; }
+
+    .confirmar-card {
+      background:white; border-radius:20px;
+      box-shadow:0 4px 20px rgba(0,0,0,.1); overflow:hidden;
+    }
+    .confirmar-header {
+      background: linear-gradient(135deg, var(--rojo-logo), #B71C1C);
+      padding:28px; text-align:center; color:white;
+    }
+    .confirmar-header .icono { font-size:52px; margin-bottom:12px; }
+    .confirmar-header h1 { font-size:22px; font-weight:900; }
+    .confirmar-header p { opacity:.85; margin-top:6px; }
+
+    .confirmar-body { padding:28px; }
+
+    .producto-info {
+      background:#fde8e8; border-radius:12px; padding:18px;
+      margin-bottom:24px; border-left:4px solid var(--rojo-logo);
+    }
+    .producto-info .nombre {
+      font-size:18px; font-weight:900; color:var(--rojo-logo);
+    }
+    .producto-info .detalle { font-size:13px; color:#888; margin-top:6px; }
+
+    .advertencia {
+      background:#fff3cd; border-radius:12px; padding:14px 18px;
+      font-size:13px; color:#856404; margin-bottom:24px;
+      border-left:4px solid #ffc107;
+    }
+
+    .btn-footer { display:flex; gap:12px; }
+    .btn-cancelar {
+      flex:1; background:#f0f0f0; color:#666;
+      border:none; border-radius:20px; padding:12px;
+      font-weight:700; font-size:14px; cursor:pointer;
+      text-decoration:none; text-align:center; transition:.2s;
+    }
+    .btn-cancelar:hover { background:#e0e0e0; }
+    .btn-eliminar {
+      flex:1; background:var(--rojo-logo); color:white;
+      border:none; border-radius:20px; padding:12px;
+      font-weight:700; font-size:14px; cursor:pointer; transition:.2s;
+    }
+    .btn-eliminar:hover { background:#B71C1C; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <a class="logo-wrap" href="/">
+        <div class="logo-icon">LB</div>
+        <div class="logo-text">
+          <strong>Los Boyacos</strong>
+          <span>Tienda Virtual</span>
+        </div>
+      </a>
+      <a class="btn-nav" href="/productos">← Productos</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="confirmar-card">
+
+      <div class="confirmar-header">
+        <div class="icono">🗑️</div>
+        <h1>Eliminar Producto</h1>
+        <p>Esta acción no se puede deshacer</p>
+      </div>
+
+      <div class="confirmar-body">
+
+        <div class="producto-info">
+          <div class="nombre">{{ producto.Nom_Producto }}</div>
+          <div class="detalle">
+            ID: {{ producto.Id_Producto }} ·
+            Precio: ${{ producto.Vlr_Unitario }} ·
+            Stock: {{ producto.Cant_Stock }} uds
+          </div>
+        </div>
+
+        <div class="advertencia">
+          ⚠️ Al eliminar este producto se borrará permanentemente de la base de datos.
+        </div>
+
+        <div class="btn-footer">
+          <a class="btn-cancelar" href="/productos">Cancelar</a>
+          <form method="POST" style="flex:1">
+            <button class="btn-eliminar" type="submit"
+              style="width:100%">
+              🗑️ Sí, eliminar
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>

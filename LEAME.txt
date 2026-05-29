@@ -1,0 +1,181 @@
+═══════════════════════════════════════════════════════════════════════
+  TIENDA LOS BOYACOS — Plataforma de E-commerce
+  Productos artesanales típicos del departamento de Boyacá, Colombia
+  Programa: Análisis y Desarrollo de Software — SENA
+  Ficha: 228118 | Aprendiz: Marino Pérez Marín
+═══════════════════════════════════════════════════════════════════════
+
+────────────────────────────────────────────────────────────────────
+  REQUISITOS DEL SISTEMA
+────────────────────────────────────────────────────────────────────
+
+  - Python          3.13+
+  - XAMPP           8.x (Apache + MariaDB)
+  - pip             (incluido con Python)
+  - Navegador       Chrome / Edge (recomendado)
+  - Sistema         Windows 10/11
+
+────────────────────────────────────────────────────────────────────
+  DEPENDENCIAS PYTHON (requirements.txt)
+────────────────────────────────────────────────────────────────────
+
+  flask               3.x
+  mysql-connector-python
+  werkzeug
+  reportlab
+  pypdf
+
+  Instalar con:
+    pip install -r requirements.txt
+
+────────────────────────────────────────────────────────────────────
+  INSTALACIÓN PASO A PASO
+────────────────────────────────────────────────────────────────────
+
+  1. Iniciar XAMPP → Apache + MySQL (MariaDB)
+
+  2. Crear la base de datos en phpMyAdmin:
+     - Nombre: tiendalosboyacos
+     - Cotejamiento: utf8mb4_unicode_ci
+     - Importar: setup.sql (si existe) o ejecutar las migraciones
+
+  3. Ejecutar seed inicial:
+       cd seeds
+       python seed_roles.py
+
+  4. Iniciar la aplicación:
+       cd C:\xampp\htdocs\PROYECTOS\tiendalosboyacos-python
+       python app.py
+
+  5. Abrir en el navegador:
+       http://localhost:5000
+
+────────────────────────────────────────────────────────────────────
+  ESTRUCTURA DE CARPETAS
+────────────────────────────────────────────────────────────────────
+
+  tiendalosboyacos-python/
+  │
+  ├── app.py                        ← Punto de entrada Flask (rutas)
+  ├── requirements.txt              ← Dependencias Python
+  ├── LEAME.txt                     ← Este archivo
+  │
+  ├── config/
+  │   └── db.py                     ← Conexión a MariaDB
+  │
+  ├── src/
+  │   ├── models/                   ← Capa MODELO (acceso a BD)
+  │   │   ├── producto.py           ← Clase Producto
+  │   │   ├── usuario.py            ← Clase Usuario
+  │   │   ├── venta.py              ← Clase Venta
+  │   │   └── categoria.py          ← Clase Categoria
+  │   │
+  │   └── controllers/              ← Capa CONTROLADOR (lógica de negocio)
+  │       ├── producto_ctrl.py      ← Clase ProductoController
+  │       ├── usuario_ctrl.py       ← Clase UsuarioController
+  │       └── venta_ctrl.py         ← Clase VentaController
+  │
+  ├── templates/                    ← Capa VISTA (Jinja2 HTML)
+  │   ├── index.html                ← Catálogo público + carrito
+  │   ├── login.html                ← Inicio de sesión
+  │   ├── admin.html                ← Panel administrador
+  │   ├── panel_domiciliario.html   ← Panel domiciliario
+  │   ├── productos.html            ← Gestión de productos (admin)
+  │   ├── producto_form.html        ← Formulario crear/editar producto
+  │   ├── producto_detalle.html     ← Detalle de producto
+  │   ├── producto_eliminar.html    ← Confirmación eliminar producto
+  │   ├── usuarios.html             ← Gestión de usuarios (admin)
+  │   ├── usuario_form.html         ← Formulario crear/editar usuario
+  │   ├── usuario_detalle.html      ← Detalle de usuario
+  │   ├── usuario_eliminar.html     ← Confirmación eliminar usuario
+  │   ├── pedidos.html              ← Gestión de ventas (admin)
+  │   ├── pedido_detalle.html       ← Detalle de venta
+  │   ├── mis_pedidos.html          ← Panel cliente (mis compras)
+  │   └── admin_config.html         ← Configuración QR de pago
+  │
+  ├── static/
+  │   └── img/
+  │       ├── productos/            ← Imágenes subidas de productos
+  │       ├── usuarios/             ← Fotos de perfil de usuarios
+  │       ├── qr/                   ← Códigos QR de pago
+  │       └── default/
+  │           ├── producto.svg      ← Imagen por defecto de producto
+  │           └── usuario.svg       ← Avatar por defecto de usuario
+  │
+  └── seeds/
+      └── seed_roles.py             ← Datos iniciales (roles + admin)
+
+────────────────────────────────────────────────────────────────────
+  ARQUITECTURA — MVC (Modelo-Vista-Controlador)
+────────────────────────────────────────────────────────────────────
+
+  CLIENTE (Navegador)
+      ↕ HTTP
+  VISTA (templates/*.html — Jinja2 + JS)
+      ↕
+  RUTAS (app.py — Flask)
+      ↕
+  CONTROLADOR (src/controllers/ — lógica de negocio)
+      ↕
+  MODELO (src/models/ — acceso a BD)
+      ↕
+  BASE DE DATOS (MariaDB — tiendalosboyacos)
+
+────────────────────────────────────────────────────────────────────
+  BASE DE DATOS — TABLAS
+────────────────────────────────────────────────────────────────────
+
+  Tabla               Descripción
+  ─────────────────── ──────────────────────────────────────────────
+  rol                 Roles del sistema (Admin, Cliente, Domiciliario)
+  rolxusuario         Relación N:M entre ROL y USUARIO
+  usuario             Usuarios registrados (clientes, admins, domiciliarios)
+  cuenta              Cuenta bancaria/perfil vinculada a cada usuario
+  categoria           Categorías de productos (Frutas, Carnes, etc.)
+  categoriaxproducto  Relación N:M entre CATEGORIA y PRODUCTO
+  producto            Catálogo de productos de la tienda
+  inventario          Registro histórico de stock por producto
+  venta               Cabecera de cada venta realizada
+  detalle             Líneas de detalle de cada venta (productos comprados)
+  qr_pago             Códigos QR de pago configurados por el admin
+
+────────────────────────────────────────────────────────────────────
+  ROLES DEL SISTEMA
+────────────────────────────────────────────────────────────────────
+
+  Rol             Acceso                              URL inicial
+  ─────────────── ─────────────────────────────────── ────────────
+  Admin           Panel completo de gestión           /admin
+  Cliente         Catálogo + carrito + mis pedidos    /
+  Domiciliario    Panel de entregas pendientes        /domiciliario
+  (sin sesión)    Catálogo público (solo ver)         /
+
+────────────────────────────────────────────────────────────────────
+  USUARIO ADMINISTRADOR POR DEFECTO
+────────────────────────────────────────────────────────────────────
+
+  Correo:      admin@losboyacos.com
+  Contraseña:  admin123
+  ⚠️  Cambiar la contraseña antes de desplegar en producción
+
+────────────────────────────────────────────────────────────────────
+  USUARIO DOMICILIARIO DEMO
+────────────────────────────────────────────────────────────────────
+
+  Correo:      domiciliario@losboyacos.com
+  Contraseña:  domi123
+
+────────────────────────────────────────────────────────────────────
+  TECNOLOGÍAS UTILIZADAS
+────────────────────────────────────────────────────────────────────
+
+  Backend         Python 3.13 + Flask 3.x
+  Base de datos   MariaDB (vía XAMPP)
+  Driver BD       mysql-connector-python
+  Frontend        HTML5 + CSS3 + JavaScript (vanilla)
+  Templates       Jinja2
+  Seguridad       Werkzeug (hash bcrypt de contraseñas)
+  PDF             ReportLab
+  Control version Git + GitHub
+
+

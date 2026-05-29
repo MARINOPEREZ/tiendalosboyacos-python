@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Fondo circular gris -->
+  <circle cx="100" cy="100" r="100" fill="#9E9E9E"/>
+  <!-- Cabeza -->
+  <circle cx="100" cy="72" r="30" fill="#FFFFFF"/>
+  <!-- Cuerpo / hombros -->
+  <ellipse cx="100" cy="155" rx="48" ry="38" fill="#FFFFFF"/>
+</svg>

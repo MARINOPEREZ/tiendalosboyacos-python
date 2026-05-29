@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ usuario.Nom1_Usuario }} {{ usuario.Ape1_Usuario }} — Los Boyacos</title>
+  <style>
+    :root {
+      --verde-oscuro: #1B5E20;
+      --verde-medio: #2E7D32;
+      --verde-claro: #4CAF50;
+      --amarillo: #FDB913;
+      --amarillo-claro: #FFF9E6;
+      --rojo-logo: #D32F2F;
+      --bg: #f4f6f0;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Segoe UI',sans-serif; background:var(--bg); color:#333; }
+
+    header {
+      background: linear-gradient(135deg, var(--verde-oscuro), var(--verde-medio));
+      padding: 0 20px;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.3);
+    }
+    .header-inner {
+      max-width:1200px; margin:0 auto;
+      display:flex; align-items:center; justify-content:space-between;
+      padding: 14px 0;
+    }
+    .logo-wrap { display:flex; align-items:center; gap:10px; text-decoration:none; }
+    .logo-icon {
+      width:48px; height:48px; background:var(--amarillo);
+      border-radius:50%; display:flex; align-items:center;
+      justify-content:center; font-size:22px; font-weight:900;
+      color:var(--verde-oscuro); border:3px solid white;
+    }
+    .logo-text { color:white; }
+    .logo-text strong { font-size:18px; }
+    .logo-text span { display:block; font-size:11px; opacity:.8; }
+    .nav-links { display:flex; gap:10px; }
+    .btn-nav {
+      background:var(--amarillo); color:var(--verde-oscuro);
+      border:none; border-radius:20px; padding:8px 18px;
+      font-weight:700; font-size:13px; cursor:pointer;
+      text-decoration:none;
+    }
+    .btn-nav.outline {
+      background:transparent; color:white;
+      border:2px solid rgba(255,255,255,.5);
+    }
+    .btn-nav.outline:hover { border-color:var(--amarillo); color:var(--amarillo); }
+
+    main { max-width:700px; margin:30px auto; padding:0 16px; }
+
+    .breadcrumb {
+      display:flex; align-items:center; gap:8px;
+      font-size:13px; color:#888; margin-bottom:20px;
+    }
+    .breadcrumb a { color:var(--verde-oscuro); text-decoration:none; font-weight:600; }
+    .breadcrumb a:hover { text-decoration:underline; }
+
+    /* PERFIL CARD */
+    .perfil-card {
+      background:white; border-radius:20px;
+      box-shadow:0 4px 20px rgba(0,0,0,.1); overflow:hidden;
+    }
+    .perfil-header {
+      background: linear-gradient(135deg, var(--rojo-logo), #B71C1C);
+      padding:30px; text-align:center; color:white;
+    }
+    .avatar-grande {
+      width:90px; height:90px; border-radius:50%;
+      background:var(--amarillo); display:flex; align-items:center;
+      justify-content:center; font-size:32px; font-weight:900;
+      color:var(--verde-oscuro); border:4px solid white;
+      margin:0 auto 14px;
+    }
+    .perfil-nombre { font-size:24px; font-weight:900; }
+    .perfil-doc {
+      display:inline-flex; align-items:center; gap:6px;
+      background:rgba(255,255,255,.2); padding:4px 14px;
+      border-radius:20px; font-size:13px; margin-top:8px;
+    }
+
+    .perfil-body { padding:28px; }
+
+    .info-seccion {
+      margin-bottom:22px;
+    }
+    .seccion-titulo {
+      font-size:12px; text-transform:uppercase; font-weight:700;
+      color:#aaa; letter-spacing:.8px; margin-bottom:12px;
+      padding-bottom:8px; border-bottom:2px solid #f0f0f0;
+    }
+    .info-grid {
+      display:grid; grid-template-columns:1fr 1fr; gap:12px;
+    }
+    .info-item {
+      background:#f8f9f8; border-radius:12px; padding:14px;
+      border-left:4px solid var(--amarillo);
+    }
+    .info-item.full { grid-column: span 2; }
+    .info-label {
+      font-size:11px; text-transform:uppercase;
+      color:#aaa; font-weight:700; letter-spacing:.5px; margin-bottom:5px;
+    }
+    .info-val { font-size:15px; font-weight:700; color:#222; }
+
+    .btn-volver-usuarios {
+      display:inline-flex; align-items:center; gap:8px;
+      background:var(--rojo-logo); color:white;
+      border:none; border-radius:20px; padding:10px 22px;
+      font-weight:700; font-size:14px; cursor:pointer;
+      text-decoration:none; margin-top:8px; transition:.2s;
+    }
+    .btn-volver-usuarios:hover { background:#B71C1C; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <a class="logo-wrap" href="/">
+        <div class="logo-icon">LB</div>
+        <div class="logo-text">
+          <strong>Los Boyacos</strong>
+          <span>Tienda Virtual</span>
+        </div>
+      </a>
+      <div class="nav-links">
+        <a class="btn-nav outline" href="/usuarios">← Usuarios</a>
+        <a class="btn-nav" href="/">Inicio</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    {% if request.args.get("msg") == "editado" %}
+    <div style="background:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7;
+                border-radius:10px; padding:12px 18px; margin-bottom:16px; font-weight:600;">
+      ✅ Usuario actualizado correctamente
+    </div>
+    {% endif %}
+
+    <div class="breadcrumb">
+      <a href="/">Inicio</a> ›
+      <a href="/usuarios">Usuarios</a> ›
+      <span>{{ usuario.Nom1_Usuario }} {{ usuario.Ape1_Usuario }}</span>
+    </div>
+
+    <div class="perfil-card">
+
+      <!-- HEADER PERFIL -->
+      <div class="perfil-header">
+        <div class="avatar-grande">
+          {{ usuario.Nom1_Usuario[0] }}{{ usuario.Ape1_Usuario[0] }}
+        </div>
+        <div class="perfil-nombre">
+          {{ usuario.Nom1_Usuario }} {{ usuario.Nom2_Usuario }}
+          {{ usuario.Ape1_Usuario }} {{ usuario.Ape2_Usuario }}
+        </div>
+        <div class="perfil-doc">
+          🪪 {{ usuario.TipoDoc_Usuario }}: {{ usuario.NumDoc_Usuario }}
+        </div>
+      </div>
+
+      <!-- BODY PERFIL -->
+      <div class="perfil-body">
+
+        <!-- CONTACTO -->
+        <div class="info-seccion">
+          <div class="seccion-titulo">📬 Información de contacto</div>
+          <div class="info-grid">
+            <div class="info-item full">
+              <div class="info-label">📧 Correo electrónico</div>
+              <div class="info-val">{{ usuario.Mail_Usuario }}</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">📱 Teléfono</div>
+              <div class="info-val">{{ usuario.Tel_Usuario }}</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">🪪 Tipo documento</div>
+              <div class="info-val">{{ usuario.TipoDoc_Usuario }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FECHAS -->
+        <div class="info-seccion">
+          <div class="seccion-titulo">📅 Fechas del sistema</div>
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="info-label">📅 Fecha creación</div>
+              <div class="info-val">{{ usuario.FchCrea_Usuario }}</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">🔄 Última actualización</div>
+              <div class="info-val">{{ usuario.FchAct_Usuario }}</div>
+            </div>
+          </div>
+        </div>
+
+        <a class="btn-volver-usuarios" href="/usuarios">← Volver a usuarios</a>
+
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>

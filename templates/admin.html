@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel Admin — Los Boyacos</title>
+  <style>
+    :root {
+      --verde-oscuro: #1B5E20; --verde-medio: #2E7D32;
+      --verde-claro: #4CAF50; --amarillo: #FDB913;
+      --rojo-logo: #D32F2F; --bg: #f4f6f0;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Segoe UI',sans-serif; background:var(--bg); }
+
+    header {
+      background: linear-gradient(135deg, var(--verde-oscuro), var(--verde-medio));
+      padding:0 20px; box-shadow:0 3px 15px rgba(0,0,0,.3);
+    }
+    .header-inner {
+      max-width:1200px; margin:0 auto;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 0;
+    }
+    .logo-wrap { display:flex; align-items:center; gap:10px; text-decoration:none; }
+    .logo-icon {
+      width:48px; height:48px; background:var(--amarillo);
+      border-radius:50%; display:flex; align-items:center;
+      justify-content:center; font-size:22px; font-weight:900;
+      color:var(--verde-oscuro); border:3px solid white;
+    }
+    .logo-text { color:white; }
+    .logo-text strong { font-size:18px; }
+    .logo-text span { display:block; font-size:11px; opacity:.8; }
+    .header-right { display:flex; align-items:center; gap:12px; }
+    .usuario-info { color:white; font-size:13px; text-align:right; }
+    .usuario-info strong { display:block; font-size:15px; }
+    .btn-logout {
+      background:var(--rojo-logo); color:white;
+      border:none; border-radius:20px; padding:8px 18px;
+      font-weight:700; font-size:13px; text-decoration:none;
+    }
+
+    main { max-width:1200px; margin:30px auto; padding:0 16px; }
+
+    .bienvenida {
+      background: linear-gradient(135deg, var(--verde-oscuro), var(--verde-medio));
+      border-radius:16px; padding:24px 28px; color:white; margin-bottom:28px;
+    }
+    .bienvenida h1 { font-size:24px; font-weight:900; }
+    .bienvenida p { opacity:.85; margin-top:6px; }
+
+    .admin-grid {
+      display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr));
+      gap:18px;
+    }
+    .admin-card {
+      background:white; border-radius:16px;
+      box-shadow:0 2px 12px rgba(0,0,0,.08); overflow:hidden;
+      text-decoration:none; transition:.25s;
+    }
+    .admin-card:hover {
+      transform:translateY(-4px);
+      box-shadow:0 8px 24px rgba(0,0,0,.14);
+    }
+    .card-top {
+      padding:24px; display:flex; align-items:center; gap:16px;
+    }
+    .card-icono {
+      width:56px; height:56px; border-radius:14px;
+      display:flex; align-items:center; justify-content:center; font-size:28px;
+    }
+    .card-info h3 { font-size:18px; font-weight:900; color:#222; }
+    .card-info p { font-size:13px; color:#888; margin-top:4px; }
+    .card-footer {
+      padding:12px 20px; font-size:13px; font-weight:700;
+      display:flex; align-items:center; justify-content:space-between;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <a class="logo-wrap" href="/">
+        <div class="logo-icon">LB</div>
+        <div class="logo-text">
+          <strong>Los Boyacos</strong>
+          <span>Panel Administración</span>
+        </div>
+      </a>
+      <div class="header-right">
+        <div class="usuario-info">
+          <strong>{{ usuario.Nom1_Usuario }} {{ usuario.Ape1_Usuario }}</strong>
+          <span>{{ usuario.Mail_Usuario }}</span>
+        </div>
+        <a class="btn-logout" href="/logout">🚪 Salir</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <div class="bienvenida">
+      <h1>👋 Bienvenido, {{ usuario.Nom1_Usuario }}</h1>
+      <p>Panel de administración — Tienda Los Boyacos</p>
+    </div>
+
+    <div class="admin-grid">
+
+      <a class="admin-card" href="/productos">
+        <div class="card-top">
+          <div class="card-icono" style="background:#e8f5e9">📦</div>
+          <div class="card-info">
+            <h3>Productos</h3>
+            <p>Agregar, editar y eliminar productos</p>
+          </div>
+        </div>
+        <div class="card-footer" style="background:#e8f5e9; color:#1B5E20">
+          <span>Ver productos</span>
+          <span>→</span>
+        </div>
+      </a>
+
+      <a class="admin-card" href="/usuarios">
+        <div class="card-top">
+          <div class="card-icono" style="background:#fde8e8">👥</div>
+          <div class="card-info">
+            <h3>Usuarios</h3>
+            <p>Gestionar usuarios registrados</p>
+          </div>
+        </div>
+        <div class="card-footer" style="background:#fde8e8; color:#D32F2F">
+          <span>Ver usuarios</span>
+          <span>→</span>
+        </div>
+      </a>
+
+      <a class="admin-card" href="/ventas">
+        <div class="card-top">
+          <div class="card-icono" style="background:#e8f5e9">🛒</div>
+          <div class="card-info">
+            <h3>Pedidos</h3>
+            <p>Ver y gestionar todos los pedidos</p>
+          </div>
+        </div>
+        <div class="card-footer" style="background:#e8f5e9; color:#1B5E20">
+          <span>Ver pedidos</span>
+          <span>→</span>
+        </div>
+      </a>
+
+      <a class="admin-card" href="/productos/nuevo">
+        <div class="card-top">
+          <div class="card-icono" style="background:#FFF9E6">➕</div>
+          <div class="card-info">
+            <h3>Nuevo Producto</h3>
+            <p>Agregar un producto a la tienda</p>
+          </div>
+        </div>
+        <div class="card-footer" style="background:#FFF9E6; color:#e6a800">
+          <span>Agregar producto</span>
+          <span>→</span>
+        </div>
+      </a>
+
+      <a class="admin-card" href="/usuarios/nuevo">
+        <div class="card-top">
+          <div class="card-icono" style="background:#e3f2fd">👤</div>
+          <div class="card-info">
+            <h3>Nuevo Usuario</h3>
+            <p>Registrar un nuevo usuario</p>
+          </div>
+        </div>
+        <div class="card-footer" style="background:#e3f2fd; color:#1565C0">
+          <span>Registrar usuario</span>
+          <span>→</span>
+        </div>
+      </a>
+
+      <a class="admin-card" href="/admin/config">
+        <div class="card-top">
+          <div class="card-icono" style="background:#e8eaf6">⚙️</div>
+          <div class="card-info">
+            <h3>Configuración</h3>
+            <p>QR de pago y parámetros</p>
+          </div>
+        </div>
+        <div class="card-footer" style="background:#e8eaf6; color:#283593">
+          <span>Configurar</span>
+          <span>→</span>
+        </div>
+      </a>
+
+      <a class="admin-card" href="/">
+        <div class="card-top">
+          <div class="card-icono" style="background:#f3e5f5">🛍️</div>
+          <div class="card-info">
+            <h3>Ver Tienda</h3>
+            <p>Ver la tienda como cliente</p>
+          </div>
+        </div>
+        <div class="card-footer" style="background:#f3e5f5; color:#6A1B9A">
+          <span>Ir a la tienda</span>
+          <span>→</span>
+        </div>
+      </a>
+
+    </div>
+  </main>
+
+</body>
+</html>

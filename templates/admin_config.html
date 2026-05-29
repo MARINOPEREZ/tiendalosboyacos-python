@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Configuración — Los Boyacos</title>
+  <style>
+    :root{--verde-oscuro:#1B5E20;--verde-claro:#388E3C;--amarillo:#FDB913;--bg:#f5f3ee;--rojo:#C62828;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Segoe UI',sans-serif;background:var(--bg);}
+    header{background:var(--verde-oscuro);padding:14px 24px;
+           display:flex;align-items:center;justify-content:space-between;gap:10px;}
+    .logo{color:white;font-weight:900;font-size:17px;display:flex;align-items:center;gap:10px;}
+    .logo-circle{background:var(--amarillo);color:var(--verde-oscuro);width:36px;height:36px;
+                 border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;}
+    .btn-volver{background:var(--amarillo);color:var(--verde-oscuro);padding:8px 18px;
+                border-radius:20px;font-weight:700;text-decoration:none;font-size:13px;}
+    .banner{background:var(--verde-oscuro);color:white;text-align:center;padding:24px 16px;}
+    .banner h1{font-size:22px;font-weight:900;}
+    main{max-width:900px;margin:28px auto;padding:0 16px 40px;}
+    .card{background:white;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.08);
+          overflow:hidden;margin-bottom:20px;}
+    .card-header{background:var(--verde-oscuro);color:white;padding:14px 20px;
+                 font-size:15px;font-weight:800;display:flex;justify-content:space-between;align-items:center;}
+    .card-body{padding:24px;}
+    label{font-size:12px;font-weight:700;color:#555;text-transform:uppercase;
+          letter-spacing:.5px;display:block;margin-bottom:5px;}
+    input[type="text"],input[type="file"]{width:100%;padding:10px 12px;border:1.5px solid #ddd;
+        border-radius:10px;font-size:13px;margin-top:2px;transition:.2s;}
+    input:focus{outline:none;border-color:var(--verde-oscuro);}
+    .campos-dobles{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px;}
+    .campo-grupo{display:flex;flex-direction:column;}
+    .btn-agregar{background:var(--verde-oscuro);color:white;border:none;padding:12px 24px;
+                 border-radius:12px;font-size:13px;font-weight:800;cursor:pointer;width:100%;margin-top:8px;}
+    .btn-agregar:hover{background:var(--verde-claro);}
+    .alerta{padding:12px 18px;border-radius:10px;font-weight:600;margin-bottom:16px;font-size:13px;}
+    .alerta-ok {background:#e8f5e9;color:#2e7d32;border:1px solid #a5d6a7;}
+    .alerta-err{background:#fce4ec;color:#c62828;border:1px solid #f48fb1;}
+    /* ── Grid de QRs ── */
+    .qr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;}
+    .qr-item{border:1.5px solid #eee;border-radius:12px;overflow:hidden;
+             background:#fafafa;transition:.15s;}
+    .qr-item:hover{box-shadow:0 4px 16px rgba(0,0,0,.10);}
+    .qr-item-img{text-align:center;padding:16px;background:white;border-bottom:1px solid #eee;}
+    .qr-item-img img{max-width:140px;max-height:140px;object-fit:contain;border-radius:8px;}
+    .qr-item-info{padding:12px 14px;}
+    .qr-banco{font-size:13px;font-weight:800;color:var(--verde-oscuro);margin-bottom:4px;}
+    .qr-cuenta{font-size:12px;color:#555;margin-bottom:2px;}
+    .qr-titular{font-size:11px;color:#999;}
+    .qr-item-footer{padding:8px 14px;border-top:1px solid #eee;display:flex;justify-content:flex-end;}
+    .btn-eliminar{background:#fde8e8;color:var(--rojo);border:none;padding:5px 12px;
+                  border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;}
+    .btn-eliminar:hover{background:#ffcdd2;}
+    .empty-qr{text-align:center;padding:32px;color:#aaa;}
+    .empty-qr .icon{font-size:40px;margin-bottom:8px;}
+    input[type="file"]{padding:8px;border:2px dashed #ddd;background:#fafafa;cursor:pointer;}
+    .hint{font-size:11px;color:#aaa;margin-top:4px;}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-circle">LB</div>LOS BOYACOS
+  </div>
+  <a class="btn-volver" href="/admin">← Panel Admin</a>
+</header>
+
+<div class="banner">
+  <h1>⚙️ Configuración de la Tienda</h1>
+  <p style="opacity:.8;margin-top:4px;">Gestión de métodos de pago QR</p>
+</div>
+
+<main>
+
+  {% if mensaje %}
+  <div class="alerta {{ 'alerta-ok' if exito else 'alerta-err' }}">
+    {{ '✅' if exito else '❌' }} {{ mensaje }}
+  </div>
+  {% endif %}
+
+  <!-- ── Agregar nuevo QR ─────────────────────────────────────── -->
+  <div class="card">
+    <div class="card-header">
+      ➕ Agregar nuevo código QR de pago
+    </div>
+    <div class="card-body">
+      <p style="font-size:13px;color:#666;margin-bottom:16px;">
+        Cada QR aparecerá disponible para que el cliente lo seleccione al pagar
+        con <strong>Transferencia QR</strong>.
+      </p>
+      <form method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="accion" value="agregar">
+        <div class="campos-dobles">
+          <div class="campo-grupo">
+            <label>🏦 Banco *</label>
+            <input type="text" name="banco" required
+                   placeholder="Ej: Bancolombia, Nequi, Daviplata...">
+          </div>
+          <div class="campo-grupo">
+            <label>🔢 Número de cuenta / celular *</label>
+            <input type="text" name="num_cuenta" required
+                   placeholder="Ej: 300 123 4567">
+          </div>
+        </div>
+        <div class="campo-grupo" style="margin-bottom:12px;">
+          <label>👤 Nombre del titular (opcional)</label>
+          <input type="text" name="titular"
+                 placeholder="Ej: Tienda Los Boyacos">
+        </div>
+        <div class="campo-grupo" style="margin-bottom:12px;">
+          <label>📷 Imagen del código QR *</label>
+          <input type="file" name="img_qr" accept=".jpg,.jpeg,.png,.webp" required>
+          <p class="hint">Formatos: JPG, PNG, WEBP — Máx. 6 MB</p>
+        </div>
+        <button class="btn-agregar" type="submit">💾 Guardar QR</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── QRs registrados ─────────────────────────────────────── -->
+  <div class="card">
+    <div class="card-header">
+      <span>📲 Códigos QR registrados</span>
+      <span style="font-size:12px;font-weight:600;opacity:.8;">
+        {{ qrs|length }} código{{ 's' if qrs|length != 1 else '' }}
+      </span>
+    </div>
+    <div class="card-body">
+      {% if qrs %}
+      <div class="qr-grid">
+        {% for qr in qrs %}
+        <div class="qr-item">
+          <div class="qr-item-img">
+            <img src="/static/img/qr/{{ qr.Img_QR }}" alt="QR {{ qr.Banco }}">
+          </div>
+          <div class="qr-item-info">
+            <div class="qr-banco">🏦 {{ qr.Banco }}</div>
+            <div class="qr-cuenta">📱 {{ qr.Num_Cuenta }}</div>
+            {% if qr.Titular %}
+            <div class="qr-titular">👤 {{ qr.Titular }}</div>
+            {% endif %}
+          </div>
+          <div class="qr-item-footer">
+            <form method="POST" onsubmit="return confirm('¿Eliminar este QR?')">
+              <input type="hidden" name="accion"  value="eliminar">
+              <input type="hidden" name="id_qr"   value="{{ qr.Id_QR }}">
+              <button class="btn-eliminar" type="submit">🗑️ Eliminar</button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty-qr">
+        <div class="icon">📲</div>
+        <p>No hay códigos QR registrados aún.</p>
+        <p style="font-size:12px;margin-top:4px;">Agrega el primero usando el formulario de arriba.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+</main>
+</body>
+</html>

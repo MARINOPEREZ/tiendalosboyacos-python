@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Pedidos — Los Boyacos</title>
+  <style>
+    :root {
+      --verde-oscuro:#1B5E20; --verde-claro:#388E3C;
+      --amarillo:#FDB913; --rojo:#C62828; --bg:#f5f3ee;
+    }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:'Segoe UI',sans-serif; background:var(--bg); }
+
+    /* ── Header ── */
+    header {
+      background:var(--verde-oscuro); padding:14px 24px;
+      display:flex; align-items:center; justify-content:space-between;
+      flex-wrap:wrap; gap:10px; position:sticky; top:0; z-index:100;
+    }
+    .logo { color:white; font-weight:900; font-size:17px;
+            display:flex; align-items:center; gap:10px; text-decoration:none; }
+    .logo-circle { background:var(--amarillo); color:var(--verde-oscuro);
+                   width:38px; height:38px; border-radius:50%;
+                   display:flex; align-items:center; justify-content:center;
+                   font-weight:900; font-size:14px; }
+    .header-btns { display:flex; gap:8px; flex-wrap:wrap; }
+    .btn { padding:8px 16px; border-radius:20px; font-weight:700;
+           text-decoration:none; font-size:13px; white-space:nowrap; }
+    .btn-amarillo { background:var(--amarillo); color:var(--verde-oscuro); }
+    .btn-outline  { background:rgba(255,255,255,.15); color:white;
+                    border:1px solid rgba(255,255,255,.4); }
+
+    /* ── Banner ── */
+    .banner {
+      background:linear-gradient(135deg, var(--verde-oscuro) 0%, var(--verde-claro) 100%);
+      color:white; padding:32px 24px; text-align:center;
+    }
+    .banner h1 { font-size:26px; font-weight:900; margin-bottom:6px; }
+    .banner p  { opacity:.85; font-size:14px; }
+    .banner-stats {
+      display:flex; justify-content:center; gap:24px; margin-top:18px;
+      flex-wrap:wrap;
+    }
+    .stat { background:rgba(255,255,255,.15); border-radius:12px;
+            padding:10px 20px; text-align:center; }
+    .stat .num   { font-size:22px; font-weight:900; }
+    .stat .label { font-size:11px; opacity:.8; margin-top:2px; }
+
+    /* ── Main ── */
+    main { max-width:860px; margin:28px auto; padding:0 16px 40px; }
+
+    /* ── Tarjeta pedido ── */
+    .pedido-card {
+      background:white; border-radius:16px;
+      box-shadow:0 2px 12px rgba(0,0,0,.08);
+      margin-bottom:16px; overflow:hidden;
+      transition:transform .15s;
+    }
+    .pedido-card:hover { transform:translateY(-2px); }
+
+    .pedido-header {
+      padding:14px 20px; display:flex;
+      justify-content:space-between; align-items:center;
+      flex-wrap:wrap; gap:8px; border-bottom:1px solid #f0f0f0;
+    }
+    .pedido-id { font-size:15px; font-weight:900; color:var(--verde-oscuro); }
+    .pedido-fecha { font-size:12px; color:#888; margin-top:2px; }
+
+    .pedido-body {
+      padding:14px 20px; display:flex;
+      justify-content:space-between; align-items:center;
+      flex-wrap:wrap; gap:12px;
+    }
+    .pedido-meta { font-size:12px; color:#666; display:flex;
+                   flex-direction:column; gap:4px; }
+    .pedido-meta span { display:flex; align-items:center; gap:6px; }
+    .pedido-total { font-size:22px; font-weight:900; color:var(--verde-oscuro); }
+
+    .btn-ver {
+      background:var(--amarillo); color:var(--verde-oscuro);
+      padding:7px 16px; border-radius:10px; text-decoration:none;
+      font-weight:700; font-size:12px; white-space:nowrap;
+    }
+
+    /* ── Badges de estado ── */
+    .badge { padding:4px 12px; border-radius:20px; font-size:11px;
+             font-weight:700; white-space:nowrap; }
+    .badge-Pendiente  { background:#fff8e1; color:#f57c00; }
+    .badge-Confirmado { background:#e3f2fd; color:#1565c0; }
+    .badge-En-camino  { background:#e8f5e9; color:#2e7d32; }
+    .badge-Entregado  { background:#e8f5e9; color:#1b5e20; }
+    .badge-Cancelado  { background:#fce4ec; color:#c62828; }
+
+    /* ── Barra de progreso ── */
+    .progress { display:flex; align-items:center; gap:4px;
+                flex-wrap:wrap; margin-top:8px; }
+    .step {
+      padding:3px 10px; border-radius:10px;
+      font-size:10px; font-weight:700;
+      background:#f0f0f0; color:#aaa;
+    }
+    .step.done   { background:#c8e6c9; color:#2e7d32; }
+    .step.active { background:var(--verde-oscuro); color:white; }
+    .arrow { color:#ccc; font-size:10px; }
+
+    /* ── Estado vacío ── */
+    .empty {
+      text-align:center; padding:60px 20px;
+      background:white; border-radius:16px;
+      box-shadow:0 2px 10px rgba(0,0,0,.06);
+    }
+    .empty .icon { font-size:64px; margin-bottom:12px; }
+    .empty h3 { font-size:18px; font-weight:800; color:#333; margin-bottom:8px; }
+    .empty p  { font-size:14px; color:#888; margin-bottom:20px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="/">
+    <div class="logo-circle">LB</div>
+    <div>
+      <div style="font-size:10px;opacity:.7;font-weight:400;">TIENDA</div>
+      LOS BOYACOS
+    </div>
+  </a>
+  <div class="header-btns">
+    <a class="btn btn-amarillo" href="/">🛍️ Seguir comprando</a>
+    <a class="btn btn-outline"  href="/logout">🚪 Salir</a>
+  </div>
+</header>
+
+<div class="banner">
+  <h1>📦 Mis Pedidos</h1>
+  <p>Hola, <strong>{{ usuario_session.nombre }}</strong> — historial completo de tus compras</p>
+
+  {% if pedidos %}
+  <div class="banner-stats">
+    <div class="stat">
+      <div class="num">{{ pedidos|length }}</div>
+      <div class="label">Total pedidos</div>
+    </div>
+    <div class="stat">
+      <div class="num">
+        {{ pedidos|selectattr('Estado_Venta','equalto','Entregado')|list|length }}
+      </div>
+      <div class="label">Entregados</div>
+    </div>
+    <div class="stat">
+      <div class="num">
+        {{ pedidos|selectattr('Estado_Venta','equalto','Pendiente')|list|length }}
+      </div>
+      <div class="label">Pendientes</div>
+    </div>
+    <div class="stat">
+      <div class="num">
+        ${{ "{:,.0f}".format(pedidos|sum(attribute='Total_Venta')|float).replace(",",".") }}
+      </div>
+      <div class="label">Total gastado</div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<main>
+
+  {% if pedidos %}
+    {% set orden = ['Pendiente','Confirmado','En camino','Entregado'] %}
+    {% for p in pedidos %}
+
+    <div class="pedido-card">
+      <div class="pedido-header">
+        <div>
+          <div class="pedido-id">📦 Pedido #{{ p.Id_Venta }}</div>
+          <div class="pedido-fecha">
+            📅 {{ p.Fech_Venta.strftime('%d/%m/%Y a las %H:%M') }}
+          </div>
+        </div>
+        <span class="badge badge-{{ p.Estado_Venta|replace(' ','-') }}">
+          {{ p.Estado_Venta }}
+        </span>
+      </div>
+
+      <div class="pedido-body">
+        <div>
+          <div class="pedido-meta">
+            <span>
+              {% if p.Tipo_Entrega == 'Punto de venta' %}
+                🏪 Retiro en punto de venta
+              {% else %}
+                🏍️ Envío a domicilio
+                {% if p.Direccion %}
+                  — {{ p.Direccion }}
+                {% endif %}
+              {% endif %}
+            </span>
+            <span>
+              {% if p.Metodo_Pago == 'Transferencia QR' %}
+                📲 Pago por Transferencia QR
+              {% else %}
+                💵 Pago en Efectivo
+              {% endif %}
+            </span>
+          </div>
+
+          <!-- Barra de progreso — solo si no está cancelado -->
+          {% if p.Estado_Venta != 'Cancelado' and p.Tipo_Entrega != 'Punto de venta' %}
+          <div class="progress">
+            {% for est in orden %}
+              {% set idx_actual = orden.index(p.Estado_Venta) if p.Estado_Venta in orden else 0 %}
+              {% set idx_paso   = orden.index(est) %}
+              <span class="step {{ 'active' if est == p.Estado_Venta else ('done' if idx_paso < idx_actual else '') }}">
+                {{ est }}
+              </span>
+              {% if not loop.last %}<span class="arrow">→</span>{% endif %}
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+
+        <div style="text-align:right; display:flex; flex-direction:column;
+                    align-items:flex-end; gap:8px;">
+          <div class="pedido-total">
+            ${{ "{:,.0f}".format(p.Total_Venta|float).replace(",",".") }}
+          </div>
+          <a class="btn-ver" href="/mis-pedidos/{{ p.Id_Venta }}">
+            Ver detalle →
+          </a>
+        </div>
+      </div>
+    </div>
+
+    {% endfor %}
+
+  {% else %}
+    <div class="empty">
+      <div class="icon">🛒</div>
+      <h3>Aún no tienes pedidos</h3>
+      <p>Cuando realices tu primera compra, aparecerá aquí.</p>
+      <a href="/" class="btn btn-amarillo" style="display:inline-block;
+         padding:12px 28px; border-radius:20px; font-size:14px;">
+        🛍️ Ir a la tienda
+      </a>
+    </div>
+  {% endif %}
+
+</main>
+</body>
+</html>
