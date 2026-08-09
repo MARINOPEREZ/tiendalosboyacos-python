@@ -1,0 +1,14 @@
+# Normaliza finales de línea para evitar que Git marque archivos como
+# "modificados" solo por diferencias CRLF (Windows) vs LF (repositorio).
+# Motivo: el 9 de agosto de 2026 se detectaron 30 archivos marcados como
+# modificados en los que el único cambio real era el final de línea.
+* text=auto eol=lf
+
+# Los binarios nunca deben pasar por conversión de línea
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.svg binary
+*.ico binary
+*.pdf binary

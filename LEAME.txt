@@ -2,7 +2,7 @@
   TIENDA LOS BOYACOS — Plataforma de E-commerce
   Productos artesanales típicos del departamento de Boyacá, Colombia
   Programa: Análisis y Desarrollo de Software — SENA
-  Ficha: 228118 | Aprendiz: Marino Pérez Marín
+  Ficha: 3070108 | Aprendiz: Marino Pérez Marín
 ═══════════════════════════════════════════════════════════════════════
 
 ────────────────────────────────────────────────────────────────────
