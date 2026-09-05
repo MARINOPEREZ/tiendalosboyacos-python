@@ -36,6 +36,7 @@ from src.controllers.venta_ctrl     import VentaController
 from src.controllers.usuario_ctrl import UsuarioController
 from src.routes.producto_routes import producto_bp
 from src.routes.usuario_routes import usuario_bp
+from src.services.api_auth import auth_bp
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 6 * 1024 * 1024  # 6 MB máximo por request
@@ -44,6 +45,7 @@ app.json.ensure_ascii = False
 
 app.register_blueprint(producto_bp, url_prefix="/api")
 app.register_blueprint(usuario_bp, url_prefix="/api")
+app.register_blueprint(auth_bp, url_prefix="/api/auth")  # AA5-EV01: /api/auth/registro, /api/auth/login
 
 # ─── DECORADOR: requiere login ───────────────────────────
 def login_requerido(f):
