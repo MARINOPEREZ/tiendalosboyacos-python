@@ -1,3 +1,13 @@
+import sys
+# Forzar salida UTF-8: en consolas Windows con codepage cp1252 (la mayoría
+# por defecto), los print() con emoji de config/db.py y los modelos
+# revientan con UnicodeEncodeError antes de poder responder la petición.
+try:
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
+except Exception:
+    pass
+
 from flask import Flask, render_template, request, redirect, session
 import os
 from werkzeug.utils import secure_filename
