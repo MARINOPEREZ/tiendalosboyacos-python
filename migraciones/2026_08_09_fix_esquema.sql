@@ -3,19 +3,15 @@
 -- Fecha: 2026-08-09
 -- Base de datos: tiendalosboyacos (MariaDB)
 --
--- Corrige los hallazgos pendientes documentados en el informe de
--- estado del proyecto: tablas intermedias sin llaves foráneas
--- explícitas, FKs faltantes en DETALLE y VENTA, CUENTA sin campo de
--- contraseña, uso de CHAR en vez de VARCHAR y nulabilidad
--- inconsistente en nombres de USUARIO.
---
--- CÓMO EJECUTAR:
---   1. Haz un respaldo primero: mysqldump -u root tiendalosboyacos > respaldo_2026_08_09.sql
---   2. Ejecuta este archivo completo en phpMyAdmin (pestaña SQL) o con:
---        mysql -u root tiendalosboyacos < migraciones/2026_08_09_fix_esquema.sql
---   3. Revisa los mensajes de error de cada sección: si alguna tabla ya
---      tiene una columna o índice con el mismo nombre, esa sentencia
---      puntual fallará mientras el resto de la migración continúa.
+-- ESTADO (verificado 2026-09-04 contra la BD real vía information_schema):
+-- YA APLICADA — no ejecutar. Todas las FKs de las secciones 1-4 ya
+-- existen en la BD (rolxusuario_ibfk_*, categoriaxproducto_ibfk_*,
+-- detalle_ibfk_*, venta_ibfk_*), los tipos CHAR ya fueron migrados a
+-- VARCHAR/TEXT (sección 6) y la nulabilidad de USUARIO (sección 7) ya
+-- es la correcta. Solo la sección 5 quedó obsoleta por un cambio de
+-- diseño posterior: Password terminó en USUARIO en vez de CUENTA (ver
+-- nota en esa sección). Se conserva este archivo como registro
+-- histórico de las decisiones tomadas, no como script ejecutable.
 -- =====================================================================
 
 
@@ -90,12 +86,18 @@ ALTER TABLE VENTA
 
 
 -- ---------------------------------------------------------------------
--- 5. CUENTA — sin campo de contraseña, y sin FK explícita a USUARIO
+-- 5. CUENTA — sin FK explícita a USUARIO
 --    (el modelo relaciona USUARIO 1---N CUENTA)
+--
+--    OBSOLETO: la columna Password NO se agregó aquí. El diseño real
+--    terminó agregando Password directamente a USUARIO (ver
+--    seed/seed_roles.py), que es de donde app.py lee la contraseña en
+--    el login. Agregar Password a CUENTA ahora crearía una segunda
+--    contraseña sin usar — no ejecutar ese ADD COLUMN.
+--    La FK a USUARIO sí se aplicó (fk existente: cuenta_ibfk_1).
 -- ---------------------------------------------------------------------
 ALTER TABLE CUENTA
-    ADD COLUMN NumDoc_Usuario CHAR(15) NOT NULL AFTER Cod_Cuenta,
-    ADD COLUMN Password VARCHAR(255) NOT NULL AFTER Nom_Cuenta;
+    ADD COLUMN NumDoc_Usuario CHAR(15) NOT NULL AFTER Cod_Cuenta;
 
 ALTER TABLE CUENTA
     ADD CONSTRAINT fk_cuenta_usuario
