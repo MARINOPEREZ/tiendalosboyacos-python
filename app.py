@@ -1,3 +1,13 @@
+import sys
+# Forzar salida UTF-8: en consolas Windows con codepage cp1252 (la mayoría
+# por defecto), los print() con emoji de config/db.py y los modelos
+# revientan con UnicodeEncodeError antes de poder responder la petición.
+try:
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
+except Exception:
+    pass
+
 from flask import Flask, render_template, request, redirect, session
 import os
 from werkzeug.utils import secure_filename
@@ -34,6 +44,7 @@ from src.models.venta               import Venta
 from src.models.categoria           import Categoria
 from src.controllers.venta_ctrl     import VentaController
 from src.controllers.usuario_ctrl import UsuarioController
+from src.controllers.categoria_ctrl import CategoriaController
 from src.routes.producto_routes import producto_bp
 from src.routes.usuario_routes import usuario_bp
 from src.services.api_auth import auth_bp
@@ -348,6 +359,60 @@ def producto_eliminar(id):
         ProductoController.eliminar_producto(id)
         return redirect("/productos")
     return render_template("producto_eliminar.html", producto=producto)
+
+# ─── CATEGORÍAS ──────────────────────────────────────────
+@app.route("/categorias")
+@admin_requerido
+def vista_categorias():
+    categorias = Categoria.listar() or []
+    conteos = {c["Id_Categoria"]: Categoria.contar_productos(c["Id_Categoria"])
+               for c in categorias}
+    return render_template("categorias.html",
+                           categorias=categorias, conteos=conteos)
+
+@app.route("/categorias/nueva", methods=["GET", "POST"])
+@admin_requerido
+def categoria_nueva():
+    mensaje, exito = None, False
+    if request.method == "POST":
+        resultado = CategoriaController.agregar_categoria(
+            request.form.get("nom_categoria", ""))
+        mensaje = resultado["msg"]
+        exito   = resultado["ok"]
+    return render_template("categoria_form.html",
+        titulo="Agregar Categoría",
+        subtitulo="Crea una nueva categoría de productos",
+        categoria=None, mensaje=mensaje, exito=exito)
+
+@app.route("/categorias/editar/<int:id>", methods=["GET", "POST"])
+@admin_requerido
+def categoria_editar(id):
+    categoria = Categoria.buscar(id)
+    mensaje, exito = None, False
+    if request.method == "POST":
+        resultado = CategoriaController.editar_categoria(
+            id, request.form.get("nom_categoria", ""))
+        mensaje  = resultado["msg"]
+        exito    = resultado["ok"]
+        categoria = Categoria.buscar(id)
+    return render_template("categoria_form.html",
+        titulo="Editar Categoría",
+        subtitulo="Modifica el nombre de la categoría",
+        categoria=categoria, mensaje=mensaje, exito=exito)
+
+@app.route("/categorias/eliminar/<int:id>", methods=["GET", "POST"])
+@admin_requerido
+def categoria_eliminar(id):
+    categoria = Categoria.buscar(id)
+    total_productos = Categoria.contar_productos(id) if categoria else 0
+    error = None
+    if request.method == "POST":
+        resultado = CategoriaController.eliminar_categoria(id)
+        if resultado["ok"]:
+            return redirect("/categorias")
+        error = resultado["msg"]
+    return render_template("categoria_eliminar.html",
+        categoria=categoria, total_productos=total_productos, error=error)
 
 # ─── USUARIOS ────────────────────────────────────────────
 @app.route("/usuarios")

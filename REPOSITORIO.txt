@@ -1,0 +1,13 @@
+Evidencia: GA7-220501096-AA5-EV01 — Diseño y desarrollo de servicios web
+Aprendiz: Marino Pérez Marín
+Ficha: 3070108
+
+Repositorio GitHub:
+https://github.com/MARINOPEREZ/tiendalosboyacos-python
+
+Rama: main
+
+Servicio web implementado en: src/services/api_auth.py
+Endpoints:
+  POST /api/auth/registro
+  POST /api/auth/login

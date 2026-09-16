@@ -1,6 +1,7 @@
 import sys
 sys.path.append("../../")
 from config.db import get_connection, close_connection
+from src.models.producto import Producto
 
 class Venta:
 
@@ -50,6 +51,20 @@ class Venta:
                 if cursor.rowcount == 0:
                     raise Exception(
                         f"Stock insuficiente para '{item['nombre']}'")
+
+                # Mantener INVENTARIO en línea con el nuevo Cant_Stock
+                # (mismo mecanismo que usan alta/edición de producto — ver
+                # migraciones/2026_08_09_fix_esquema.sql, sección 8. Antes
+                # de este cambio, una venta descontaba PRODUCTO.Cant_Stock
+                # pero NUNCA actualizaba INVENTARIO.Cant_Inventario, lo que
+                # hacía que ambos valores divergieran tras cada venta).
+                cursor.execute(
+                    "SELECT Cant_Stock FROM producto WHERE Id_Producto = %s",
+                    (item["id_producto"],))
+                nuevo_stock = cursor.fetchone()[0]
+                Producto.sincronizar_inventario(
+                    cursor, item["id_producto"], nuevo_stock,
+                    f"Salida por venta #{id_venta}")
 
             conn.commit()
             print(f"✅ Venta #{id_venta} creada — total: ${total:,.0f}")

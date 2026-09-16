@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Categorías — Tienda Los Boyacos</title>
+  <style>
+    :root {
+      --verde-oscuro: #1B5E20;
+      --verde-medio: #2E7D32;
+      --verde-claro: #4CAF50;
+      --amarillo: #FDB913;
+      --amarillo-claro: #FFF9E6;
+      --rojo-logo: #D32F2F;
+      --bg: #f4f6f0;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Segoe UI',sans-serif; background:var(--bg); color:#333; }
+
+    header {
+      background: linear-gradient(135deg, var(--verde-oscuro), var(--verde-medio));
+      padding: 0 20px;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.3);
+    }
+    .header-inner {
+      max-width:1200px; margin:0 auto;
+      display:flex; align-items:center; justify-content:space-between;
+      padding: 14px 0;
+    }
+    .logo-wrap { display:flex; align-items:center; gap:10px; text-decoration:none; }
+    .logo-icon {
+      width:48px; height:48px; background:var(--amarillo);
+      border-radius:50%; display:flex; align-items:center; justify-content:center;
+      font-size:22px; font-weight:900; color:var(--verde-oscuro);
+      border:3px solid white;
+    }
+    .logo-text { color:white; }
+    .logo-text strong { font-size:18px; }
+    .logo-text span { display:block; font-size:11px; opacity:.8; }
+    .btn-volver {
+      background:var(--amarillo); color:var(--verde-oscuro);
+      border:none; border-radius:20px; padding:8px 18px;
+      font-weight:700; font-size:13px; cursor:pointer;
+      text-decoration:none;
+    }
+
+    .banner {
+      background: linear-gradient(135deg, var(--verde-medio), var(--verde-oscuro));
+      padding:24px 20px; text-align:center; color:white;
+    }
+    .banner h1 { font-size:28px; font-weight:900; }
+    .banner p { opacity:.85; margin-top:6px; }
+
+    main { max-width:1200px; margin:0 auto; padding:24px 16px; }
+
+    .section-title {
+      display:flex; align-items:center; gap:10px; margin-bottom:20px;
+    }
+    .section-title h2 { font-size:20px; color:var(--verde-oscuro); font-weight:800; }
+    .section-title .line {
+      flex:1; height:3px;
+      background:linear-gradient(to right, var(--amarillo), transparent);
+      border-radius:2px;
+    }
+
+    .tabla-wrap {
+      background:white; border-radius:16px;
+      box-shadow:0 2px 12px rgba(0,0,0,.08); overflow:hidden;
+    }
+    table { width:100%; border-collapse:collapse; }
+    thead { background: linear-gradient(135deg, var(--verde-oscuro), var(--verde-medio)); }
+    thead th {
+      color:white; padding:14px 16px;
+      text-align:left; font-size:13px; font-weight:700;
+      text-transform:uppercase; letter-spacing:.5px;
+    }
+    tbody tr { border-bottom:1px solid #f0f0f0; transition:.2s; }
+    tbody tr:hover { background:var(--amarillo-claro); }
+    tbody td { padding:13px 16px; font-size:14px; }
+    .conteo-badge {
+      background:var(--amarillo-claro); color:var(--verde-oscuro);
+      padding:3px 10px; border-radius:10px; font-size:12px; font-weight:700;
+    }
+    .conteo-badge.cero { background:#f0f0f0; color:#999; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <a class="logo-wrap" href="/">
+        <div class="logo-icon">LB</div>
+        <div class="logo-text">
+          <strong>Los Boyacos</strong>
+          <span>Tienda Virtual</span>
+        </div>
+      </a>
+      <a class="btn-volver" href="/admin">← Panel admin</a>
+    </div>
+  </header>
+
+  <div class="banner">
+    <h1>🏷️ Gestión de Categorías</h1>
+    <p>Categorías de productos disponibles en la tienda</p>
+  </div>
+
+  <main>
+
+    <div style="display:flex; justify-content:flex-end; margin-bottom:16px;">
+      <a href="/categorias/nueva"
+         style="background:var(--verde-claro); color:white;
+         padding:10px 22px; border-radius:20px; text-decoration:none;
+         font-weight:700; font-size:14px;">
+         ➕ Agregar categoría
+      </a>
+    </div>
+
+    <div class="section-title">
+      <h2>🏷️ Lista de Categorías</h2>
+      <div class="line"></div>
+    </div>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Productos asociados</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in categorias %}
+          <tr>
+            <td>{{ c.Id_Categoria }}</td>
+            <td style="font-weight:700; color:var(--verde-oscuro);">{{ c.Nom_Categoria }}</td>
+            <td>
+              <span class="conteo-badge {% if conteos.get(c.Id_Categoria, 0) == 0 %}cero{% endif %}">
+                {{ conteos.get(c.Id_Categoria, 0) }} producto(s)
+              </span>
+            </td>
+            <td style="white-space:nowrap;">
+              <a href="/categorias/editar/{{ c.Id_Categoria }}"
+                 style="display:inline-block; background:var(--amarillo);
+                 color:var(--verde-oscuro); padding:5px 12px; border-radius:10px;
+                 text-decoration:none; font-size:12px; font-weight:700;
+                 margin-right:4px;">
+                 ✏️ Editar
+              </a>
+              <a href="/categorias/eliminar/{{ c.Id_Categoria }}"
+                 style="display:inline-block; background:#fde8e8;
+                 color:var(--rojo-logo); padding:5px 12px; border-radius:10px;
+                 text-decoration:none; font-size:12px; font-weight:700;">
+                 🗑️ Borrar
+              </a>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="4" style="text-align:center; color:#999; padding:24px;">
+            No hay categorías registradas todavía.
+          </td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+</body>
+</html>

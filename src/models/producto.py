@@ -4,6 +4,28 @@ from config.db import get_connection, close_connection
 
 class Producto:
 
+    # ─── SINCRONIZAR INVENTARIO ─────────────────────────
+    @staticmethod
+    def sincronizar_inventario(cursor, id_producto, cant_stock, observacion):
+        """
+        Mantiene INVENTARIO.Cant_Inventario en línea con PRODUCTO.Cant_Stock.
+        Se llama desde cualquier operación que cambie el stock (alta, edición
+        manual por el admin, o venta) para que ambas columnas no diverjan
+        (ver migraciones/2026_08_09_fix_esquema.sql, sección 8).
+
+        Recibe un cursor ya abierto para participar de la misma transacción
+        que la operación que lo invoca — no abre ni cierra conexión propia.
+        """
+        cursor.execute("""
+            INSERT INTO inventario
+                (Id_Producto, Cant_Inventario, Fech_Registro, Observacion)
+            VALUES (%s, %s, NOW(), %s)
+            ON DUPLICATE KEY UPDATE
+                Cant_Inventario = VALUES(Cant_Inventario),
+                Fech_Registro   = NOW(),
+                Observacion     = VALUES(Observacion)
+        """, (id_producto, cant_stock, observacion))
+
     # ─── AGREGAR ────────────────────────────────────────
     @staticmethod
     def agregar(nom, descripcion, vlr_unitario, cant_stock,
@@ -25,11 +47,9 @@ class Producto:
             id_producto = cursor.lastrowid
 
             # 2. INVENTARIO
-            cursor.execute("""
-                INSERT INTO inventario
-                    (Id_Producto, Cant_Inventario, Fech_Registro, Observacion)
-                VALUES (%s, %s, NOW(), 'Stock inicial al crear producto')
-            """, (id_producto, cant_stock))
+            Producto.sincronizar_inventario(
+                cursor, id_producto, cant_stock,
+                "Stock inicial al crear producto")
 
             # 3. CATEGORIAXPRODUCTO
             if ids_categorias:
@@ -107,15 +127,9 @@ class Producto:
                       iva, id_producto))
 
             # 2. INVENTARIO — actualizar si ya existe, insertar si no
-            cursor.execute("""
-                INSERT INTO inventario
-                    (Id_Producto, Cant_Inventario, Fech_Registro, Observacion)
-                VALUES (%s, %s, NOW(), 'Actualización de stock por admin')
-                ON DUPLICATE KEY UPDATE
-                    Cant_Inventario = VALUES(Cant_Inventario),
-                    Fech_Registro   = NOW(),
-                    Observacion     = 'Actualización de stock por admin'
-            """, (id_producto, cant_stock))
+            Producto.sincronizar_inventario(
+                cursor, id_producto, cant_stock,
+                "Actualización de stock por admin")
 
             # 3. CATEGORIAXPRODUCTO (reemplazar)
             if ids_categorias is not None:
