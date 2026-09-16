@@ -59,6 +59,20 @@ class CategoriaController:
             return {"ok": False, "msg": str(e)}
         return {"ok": True, "msg": "Categoría actualizada correctamente"}
 
+    # ─── CATEGORÍAS DE UN PRODUCTO (AA2-EV02 — módulo móvil) ─
+    @staticmethod
+    def obtener_categorias_de_producto(id_producto):
+        """
+        Devuelve las categorías asignadas a un producto (tabla N:M
+        CATEGORIAXPRODUCTO). Se agrega para el catálogo de la app Android,
+        que necesita mostrar a qué categoría(s) pertenece cada producto
+        en la pantalla de detalle.
+        """
+        if not id_producto:
+            return {"ok": False, "msg": "ID de producto requerido"}
+        categorias = Categoria.categorias_de_producto(id_producto)
+        return {"ok": True, "data": categorias or []}
+
     # ─── ELIMINAR ───────────────────────────────────────
     @staticmethod
     def eliminar_categoria(id_categoria):

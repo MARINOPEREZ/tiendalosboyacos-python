@@ -101,3 +101,36 @@ def test_eliminar_categoria_ok_sin_productos_asociados(mock_categoria):
     assert resultado["ok"] is True
     mock_categoria.eliminar.assert_called_once_with(3)
 
+
+# ─── CATEGORÍAS DE UN PRODUCTO (AA2-EV02) ────────────────────────
+
+@patch("src.controllers.categoria_ctrl.Categoria")
+def test_obtener_categorias_de_producto_requiere_id(mock_categoria):
+    resultado = CategoriaController.obtener_categorias_de_producto(None)
+    assert resultado["ok"] is False
+    assert "requerido" in resultado["msg"]
+    mock_categoria.categorias_de_producto.assert_not_called()
+
+
+@patch("src.controllers.categoria_ctrl.Categoria")
+def test_obtener_categorias_de_producto_ok(mock_categoria):
+    mock_categoria.categorias_de_producto.return_value = [
+        {"Id_Categoria": 1, "Nom_Categoria": "Lácteos"},
+        {"Id_Categoria": 2, "Nom_Categoria": "Artesanías"},
+    ]
+
+    resultado = CategoriaController.obtener_categorias_de_producto(18)
+
+    assert resultado["ok"] is True
+    assert len(resultado["data"]) == 2
+    mock_categoria.categorias_de_producto.assert_called_once_with(18)
+
+
+@patch("src.controllers.categoria_ctrl.Categoria")
+def test_obtener_categorias_de_producto_sin_categorias_devuelve_lista_vacia(mock_categoria):
+    mock_categoria.categorias_de_producto.return_value = None
+
+    resultado = CategoriaController.obtener_categorias_de_producto(99)
+
+    assert resultado["ok"] is True
+    assert resultado["data"] == []

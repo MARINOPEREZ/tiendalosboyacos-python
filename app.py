@@ -47,6 +47,7 @@ from src.controllers.usuario_ctrl import UsuarioController
 from src.controllers.categoria_ctrl import CategoriaController
 from src.routes.producto_routes import producto_bp
 from src.routes.usuario_routes import usuario_bp
+from src.routes.categoria_routes import categoria_bp
 from src.services.api_auth import auth_bp
 
 app = Flask(__name__)
@@ -57,6 +58,7 @@ app.json.ensure_ascii = False
 app.register_blueprint(producto_bp, url_prefix="/api")
 app.register_blueprint(usuario_bp, url_prefix="/api")
 app.register_blueprint(auth_bp, url_prefix="/api/auth")  # AA5-EV01: /api/auth/registro, /api/auth/login
+app.register_blueprint(categoria_bp, url_prefix="/api")  # AA2-EV02: /api/categorias, /api/productos/<id>/categorias
 
 # ─── DECORADOR: requiere login ───────────────────────────
 def login_requerido(f):
@@ -761,4 +763,8 @@ def test_db():
     return "❌ Error al conectar"
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # host="0.0.0.0": AA2-EV02 necesita que la app Android (emulador
+    # en 10.0.2.2, o un celular real en la misma red) pueda llegar a
+    # este servidor. Con el valor por defecto (127.0.0.1) solo el propio
+    # PC podia conectarse.
+    app.run(host="0.0.0.0", debug=True)
