@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/blanco">
+
+    <TextView
+        android:id="@+id/textoBienvenida"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/verde_sena"
+        android:textColor="@color/blanco"
+        android:textSize="16sp"
+        android:padding="16dp" />
+
+    <ProgressBar
+        android:id="@+id/barraProgresoCatalogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="24dp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/textoEstadoCatalogo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/gris_texto"
+        android:padding="16dp" />
+
+    <ListView
+        android:id="@+id/listaProductos"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@color/verde_sena"
+        android:dividerHeight="1dp" />
+
+</LinearLayout>

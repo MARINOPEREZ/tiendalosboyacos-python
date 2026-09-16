@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Colores institucionales SENA usados en los documentos de evidencia -->
+    <color name="verde_sena">#1B5E20</color>
+    <color name="amarillo_sena">#FDB913</color>
+    <color name="naranja_sena">#E8521A</color>
+    <color name="blanco">#FFFFFF</color>
+    <color name="gris_texto">#4A4A4A</color>
+</resources>

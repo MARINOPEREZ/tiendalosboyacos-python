@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="32dp"
+    android:background="@color/verde_sena">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textColor="@color/blanco"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="4dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Módulo móvil · GA8-220501096-AA2-EV02"
+        android:textColor="@color/amarillo_sena"
+        android:textSize="13sp"
+        android:layout_marginBottom="32dp" />
+
+    <EditText
+        android:id="@+id/campoMail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Correo electrónico"
+        android:inputType="textEmailAddress"
+        android:background="@color/blanco"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp" />
+
+    <EditText
+        android:id="@+id/campoPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Contraseña"
+        android:inputType="textPassword"
+        android:background="@color/blanco"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/botonIngresar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ingresar"
+        android:backgroundTint="@color/naranja_sena"
+        android:textColor="@color/blanco" />
+
+    <ProgressBar
+        android:id="@+id/barraProgreso"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/textoAyuda"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/amarillo_sena"
+        android:gravity="center"
+        android:layout_marginTop="12dp" />
+
+</LinearLayout>

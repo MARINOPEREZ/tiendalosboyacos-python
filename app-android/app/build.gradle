@@ -1,0 +1,46 @@
+apply plugin: 'com.android.application'
+
+android {
+    namespace 'co.edu.sena.tiendalosboyacos.mobile'
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "co.edu.sena.tiendalosboyacos.mobile"
+        minSdk 21
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    testOptions {
+        unitTests {
+            // Necesario porque las pruebas usan org.json: en las pruebas
+            // unitarias locales (JVM, sin dispositivo) el org.json del
+            // android.jar es solo un stub que lanza "not mocked". La
+            // dependencia org.json:json de abajo trae una implementacion
+            // real que reemplaza ese stub en el classpath de pruebas.
+            returnDefaultValues = true
+        }
+    }
+}
+
+dependencies {
+    // Unica dependencia externa de produccion: ninguna. El proyecto usa
+    // solo lo incluido en el SDK de Android (HttpURLConnection, org.json)
+    // para no repetir el problema de resolucion de Gradle de AA2-EV01.
+    testImplementation 'junit:junit:4.13.2'
+    // Implementacion real de org.json para que ProductoMapperTest pueda
+    // correr como prueba unitaria local (JVM), sin emulador.
+    testImplementation 'org.json:json:20240303'
+}
